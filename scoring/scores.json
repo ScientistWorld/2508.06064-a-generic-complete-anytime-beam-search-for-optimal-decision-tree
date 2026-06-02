@@ -13,7 +13,7 @@
           "optimality_proved_rate": 0.0
         },
         "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.007039109409293707,
+          "avg_primal_gap_integral": 0.0070435984114951946,
           "avg_excess_error_rate": 0.0,
           "optimality_proved_rate": 0.5
         },
@@ -23,7 +23,7 @@
           "optimality_proved_rate": 0.5
         },
         "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.025692159679773098,
+          "avg_primal_gap_integral": 0.026507750208325246,
           "avg_excess_error_rate": 0.0,
           "optimality_proved_rate": 1.0
         }
