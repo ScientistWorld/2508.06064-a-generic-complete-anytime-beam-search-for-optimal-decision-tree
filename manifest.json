@@ -1,0 +1,141 @@
+{
+  "paper": {
+    "arxiv_id": "2508.06064",
+    "title": "A Generic Complete Anytime Beam Search for Optimal Decision Tree",
+    "date": "",
+    "topics": [
+      "paper-type-metric-method",
+      "domain-ai-ml",
+      "area-decision-tree",
+      "category-optimization",
+      "method-beam-search",
+      "secondary-domain-ai-ml",
+      "secondary-area-decision-tree",
+      "secondary-category-search",
+      "secondary-method-branch-and-bound",
+      "selection-category-scientific-optimization"
+    ]
+  },
+  "reproduction": {
+    "milestone": "core_claim",
+    "status": "done",
+    "error": null,
+    "scaffold": "codex",
+    "model": "gpt-5.5",
+    "profile": "gpt-5.5-medium",
+    "effort": "medium",
+    "gpu_hours_used": 0.0,
+    "current_iteration_gpu_budget": 30,
+    "current_iteration_gpu_hours_used": 0.0,
+    "total_gpu_hours_used": 0.0,
+    "current_iteration_cpu_hours_used": 0.028,
+    "total_cpu_hours_used": 0.028,
+    "gpu_budget": 30,
+    "duration_sec": 786.8,
+    "cost_usd": null,
+    "input_tokens": 3803321,
+    "output_tokens": 26736,
+    "cached_input_tokens": 3622400,
+    "cache_creation_tokens": null,
+    "reasoning_tokens": 0,
+    "total_input_tokens": 3803321,
+    "num_turns": 67,
+    "duration_api_ms": null,
+    "num_runs": 1,
+    "iteration_count": 0,
+    "workflow": "standard",
+    "workflow_step": 0,
+    "total_gpu_jobs": 2,
+    "time_breakdown": {
+      "working": 619.5251414775848,
+      "building": 0.07960152626037598,
+      "installing": 1.462590217590332,
+      "waiting": 110.75550627708435
+    }
+  },
+  "agents": [
+    {
+      "scaffold": "codex",
+      "model": "gpt-5.5",
+      "profile": "gpt-5.5-medium",
+      "effort": "medium",
+      "role": "reproducer",
+      "is_iteration": false,
+      "iteration": 1,
+      "workflow": "standard",
+      "workflow_step": 0,
+      "started_at": 1780367572.3167984,
+      "finished_at": 1780368359.1440458,
+      "duration_sec": 786.8,
+      "blocked_sec": 0.0,
+      "status": "done",
+      "error": null,
+      "milestone": "core_claim",
+      "gpu_budget": 30,
+      "gpu_hours_used": 0.0,
+      "total_gpu_hours_used": 0.0,
+      "cpu_hours_used": 0.028,
+      "time_breakdown": {
+        "working": 619.5251414775848,
+        "building": 0.07960152626037598,
+        "installing": 1.462590217590332,
+        "waiting": 110.75550627708435
+      },
+      "cost_usd": null,
+      "input_tokens": 3803321,
+      "output_tokens": 26736,
+      "cached_input_tokens": 3622400,
+      "cache_creation_tokens": null,
+      "reasoning_tokens": 0,
+      "total_input_tokens": 3803321,
+      "num_turns": 67,
+      "duration_api_ms": null,
+      "tool_uses": {
+        "shell": 56,
+        "file_edit": 11
+      },
+      "gpu_jobs": [
+        {
+          "run_id": "b12adc9f-386",
+          "command": "bash /home/user/scripts/run.sh",
+          "num_gpus": 0,
+          "num_cpus": 1,
+          "resource": "gpu-cpu",
+          "hive_job_id": "0830aaf2",
+          "status": "failed",
+          "returncode": 1,
+          "duration_sec": 41.1,
+          "submitted_at": 1780367898.3624105,
+          "started_at": 1780367900.3886619,
+          "completed_at": 1780367941.5252686
+        },
+        {
+          "run_id": "ec7ff279-b47",
+          "command": "bash /home/user/scripts/run.sh",
+          "num_gpus": 0,
+          "num_cpus": 1,
+          "resource": "gpu-cpu",
+          "hive_job_id": "343f7a82",
+          "status": "completed",
+          "returncode": 0,
+          "duration_sec": 60.0,
+          "submitted_at": 1780368243.1916559,
+          "started_at": 1780368247.085206,
+          "completed_at": 1780368307.1106968
+        }
+      ],
+      "progress_log": "### [2026-06-02 02:33] - none\n- Read the paper markdown and identified the method, datasets, metrics, and\n  reported results.\n- Verified the CP4IM dataset host is reachable.\n\n### [2026-06-02 02:45] - method_runs\n- Implemented CP4IM loading, DL8.5 exact search, CA-DL8.5 restart search, and\n  greedy/Top-k baselines.\n- Ran a lightweight local smoke test that executed baseline, method, and\n  evaluation code end-to-end on a tiny `zoo-1` subset.\n\n### [2026-06-02 02:55] - method_runs\n- Reviewed failed compute job. It produced method and baseline traces, then\n  failed validation because several scored method names were missing from the\n  scaled reference block.\n- Fixed the reference/evaluation mismatch and made the scaled benchmark harder\n  by using full-row `vote` and `tic-tac-toe` with a 16-feature cap.\n- Verified locally that the fixed pipeline passes `validate.py --compare`.\n\n### [2026-06-02 03:00] - core_claim\n- Compute-node rerun completed with exit code 0 and `validate.py --compare`\n  passed.\n- On the scaled depth-4 CP4IM benchmark, CA-Discrepancy achieved lower average\n  primal gap integral than greedy/top3 while preserving partial optimality proof\n  behavior.\n- The environment now includes reusable method, baseline, evaluation, download,\n  and reproduction scripts."
+    }
+  ],
+  "components": {
+    "has_container": true,
+    "has_method_code": true,
+    "has_evaluation": true,
+    "has_download_script": true,
+    "has_reproduce_script": true,
+    "has_method_script": true,
+    "has_baseline": true,
+    "has_reference": true,
+    "has_data": true
+  }
+}
