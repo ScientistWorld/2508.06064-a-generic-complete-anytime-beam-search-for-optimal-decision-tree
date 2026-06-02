@@ -1,9 +1,9 @@
-# This iteration submits a compute job.
-# Once you set action to 'submit', STOP immediately.
+# This iteration is complete.
+# Once you set action to 'done', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run evaluate_train.sh and evaluate_test.sh against existing final outputs; populate split scores for train/test judgment."
+notes: "Temporal anytime split over existing CP4IM traces; 18 train metrics and 18 test metrics populated. Proposed methods improve on test vs train by about 0.010-0.017 primal-gap integral where later events occur; static baselines and exact certificate remain unchanged. Caveat: dl85_exact is saturated as the optimum-certificate baseline on this small scaled split."
