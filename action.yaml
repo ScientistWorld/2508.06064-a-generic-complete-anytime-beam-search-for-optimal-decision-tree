@@ -2,8 +2,8 @@
 # Once you set action to 'done', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: done
+action: submit
 gpus: 0
-test: false
+test: true
 milestone: core_claim
-notes: "Final verification passed; scoring now uses deterministic restart/iteration effort, and the core-claim gym is ready."
+notes: "CPU test job to regenerate baseline/method traces with the fixed 16-restart CADL8.5 cap, produce train/test scores, and validate the packaged workflow."
