@@ -56,6 +56,7 @@ class BinaryTreeSearch:
         self._split_cache: dict[tuple[tuple[int, ...], int], tuple[tuple[int, ...], tuple[int, ...]]] = {}
         self._rank_cache: dict[tuple[tuple[int, ...], tuple[int, ...]], tuple[tuple[int, float], ...]] = {}
         self._exact_cache: dict[tuple[tuple[int, ...], tuple[int, ...], int], SearchResult] = {}
+        self._beam_cache: dict[tuple[tuple[int, ...], tuple[int, ...], int, str, float, float], SearchResult] = {}
 
     def split(self, indices: tuple[int, ...], feature: int) -> tuple[tuple[int, ...], tuple[int, ...]]:
         key = (indices, feature)
@@ -180,6 +181,10 @@ class BinaryTreeSearch:
             return SearchResult(leaf_err, Tree(prediction=pred), True)
         if time.perf_counter() - start >= time_limit:
             return SearchResult(leaf_err, Tree(prediction=pred), False)
+        cache_key = (indices, available, depth, rule, round(float(threshold), 12), round(float(state), 12))
+        cached = self._beam_cache.get(cache_key)
+        if cached is not None:
+            return cached
         ranked = self.ranked_features(indices, available)
         if not ranked:
             return SearchResult(leaf_err, Tree(prediction=pred), True)
@@ -201,6 +206,7 @@ class BinaryTreeSearch:
                 best = SearchResult(err, Tree(prediction=pred, feature=f, left=left.tree, right=right.tree), left.optimal and right.optimal)
         if all_opt and best.error <= leaf_err:
             best.optimal = True
+        self._beam_cache[cache_key] = best
         return best
 
     @staticmethod

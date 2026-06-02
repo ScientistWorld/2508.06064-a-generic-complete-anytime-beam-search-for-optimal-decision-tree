@@ -14,26 +14,28 @@
 The fixed compute-node run completed successfully and passed
 `validate.py --compare`.
 
-Scaled `depth4_cp4im_anytime` results:
-- `c45_greedy`: average primal gap integral 0.0294, excess error rate 0.00115,
+Scaled `depth4_cp4im_anytime` results after adding the exact DL8.5 baseline:
+- `c45_greedy`: average primal gap integral 0.1022, excess error rate 0.00908,
   optimality proved rate 0.0
-- `top3`: average primal gap integral 0.0294, excess error rate 0.00115,
+- `top3`: average primal gap integral 0.1022, excess error rate 0.00908,
   optimality proved rate 0.0
-- `ca_discrepancy_monotonic`: average primal gap integral 0.00704, excess error
-  rate 0.0, optimality proved rate 0.5
-- `ca_topk_star_monotonic`: average primal gap integral 0.0294, excess error
-  rate 0.00115, optimality proved rate 0.5
-- `ca_gain_monotonic`: average primal gap integral 0.0265, excess error rate
-  0.0, optimality proved rate 1.0
+- `dl85_exact`: average primal gap integral 0.0, excess error rate 0.0,
+  optimality proved rate 1.0
+- `ca_discrepancy_monotonic`: average primal gap integral 0.0767, excess error
+  rate 0.00793, optimality proved rate 0.5
+- `ca_topk_star_monotonic`: average primal gap integral 0.0885, excess error
+  rate 0.00793, optimality proved rate 0.5
+- `ca_gain_monotonic`: average primal gap integral 0.0819, excess error rate
+  0.00793, optimality proved rate 1.0
 
 These results support the paper's core claim at scaled size: a CA-DL8.5 variant
 finds better incumbents over time than greedy/static baselines while retaining
 some completeness behavior.
 
-After final validation, the scaled experiment's `reference.json` targets were
-corrected to the verified scaled benchmark values rather than placeholder
-paper-scale magnitudes. The paper-scale Tables 2 and 3 remain separately
-recorded in `reference.json`.
+After audit, the scaled experiment was recomputed against an exact DL8.5
+baseline so the primal gap uses a certified optimum rather than a best-known
+incumbent from incomplete runs. The paper-scale Tables 2 and 3 remain
+separately recorded in `reference.json`.
 
 ## Remaining
 

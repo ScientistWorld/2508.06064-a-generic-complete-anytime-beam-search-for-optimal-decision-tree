@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: core_claim
-notes: "CPU smoke job: rerun the scaled CP4IM reproduction and validate scores in the scheduled container."
+notes: "CPU smoke job: rerun audited scaled CP4IM reproduction with exact DL8.5 baseline, CA-DL8.5 beam cache, and validation."
