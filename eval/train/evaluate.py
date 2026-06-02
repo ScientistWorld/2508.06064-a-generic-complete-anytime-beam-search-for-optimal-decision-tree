@@ -1,0 +1,168 @@
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+
+EXPERIMENT = "depth4_cp4im_anytime"
+SLICE = "train"
+
+
+def gap(error: int, optimal_error: int) -> float:
+    if error <= 0:
+        return 0.0
+    return abs(error - optimal_error) / abs(error)
+
+
+def instance_key(record: dict) -> tuple:
+    return (
+        record["dataset"],
+        record.get("depth"),
+        record.get("minsup"),
+        record.get("n_rows"),
+        record.get("n_features"),
+    )
+
+
+def read_records(paths: list[str]) -> list[dict]:
+    records: list[dict] = []
+    for path in paths:
+        p = Path(path)
+        if not p.exists():
+            continue
+        with p.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    records.append(json.loads(line))
+    if not records:
+        raise SystemExit("no result records found")
+    return records
+
+
+def exact_optima(records: list[dict]) -> dict[tuple, int]:
+    optima: dict[tuple, int] = {}
+    for record in records:
+        if record.get("method") == "dl85_exact" and record.get("proved_optimal"):
+            optima[instance_key(record)] = int(record["incumbent_error"])
+    return optima
+
+
+def sorted_events(record: dict) -> list[dict]:
+    events = sorted(record.get("events", []), key=lambda event: float(event.get("time", 0.0)))
+    if not events:
+        raise ValueError(f"missing anytime events for {record.get('method')} on {record.get('dataset')}")
+    return events
+
+
+def incumbent_error_at(record: dict, when: float) -> int:
+    events = sorted_events(record)
+    current_error = int(events[0]["error"])
+    for event in events:
+        if float(event.get("time", 0.0)) > when:
+            break
+        current_error = min(current_error, int(event["error"]))
+    return current_error
+
+
+def proof_time(record: dict, optimal_error: int, horizon: float) -> float | None:
+    events = sorted_events(record)
+    for event in events:
+        if event.get("optimal") and int(event["error"]) == optimal_error:
+            return float(event.get("time", 0.0))
+    if record.get("proved_optimal") and int(record.get("incumbent_error", -1)) == optimal_error:
+        if int(events[0]["error"]) == optimal_error:
+            return float(events[0].get("time", 0.0))
+        return horizon
+    return None
+
+
+def window_primal_integral(record: dict, optimal_error: int, start: float, end: float) -> float:
+    if end <= start:
+        raise ValueError(f"invalid scoring window: start={start}, end={end}")
+
+    events = sorted_events(record)
+    current_error = incumbent_error_at(record, start)
+    current_time = start
+    total = 0.0
+
+    for event in events:
+        event_time = min(float(event.get("time", 0.0)), end)
+        if event_time <= start:
+            continue
+        if event_time > current_time:
+            total += gap(current_error, optimal_error) * (event_time - current_time)
+        current_error = min(current_error, int(event["error"]))
+        current_time = event_time
+        if current_time >= end:
+            break
+
+    if current_time < end:
+        total += gap(current_error, optimal_error) * (end - current_time)
+    return total / (end - start)
+
+
+def summarize(records: list[dict], horizon: float, start: float, end: float) -> dict[str, dict[str, float]]:
+    optima = exact_optima(records)
+    grouped: dict[str, list[dict]] = {}
+
+    for record in records:
+        key = instance_key(record)
+        if key not in optima:
+            raise ValueError(
+                "missing dl85_exact proved optimum for "
+                f"dataset={key[0]!r}, depth={key[1]}, minsup={key[2]}, "
+                f"n_rows={key[3]}, n_features={key[4]}"
+            )
+        grouped.setdefault(record["method"], []).append(record)
+
+    results: dict[str, dict[str, float]] = {}
+    for method, rows in sorted(grouped.items()):
+        integrals = []
+        excess_error_rates = []
+        proof_states = []
+        for row in rows:
+            optimal_error = optima[instance_key(row)]
+            terminal_error = incumbent_error_at(row, end)
+            if terminal_error < optimal_error:
+                raise ValueError(
+                    f"{method} on {row['dataset']} has incumbent error {terminal_error} "
+                    f"below proved optimum {optimal_error}"
+                )
+            integrals.append(window_primal_integral(row, optimal_error, start, end))
+            excess_error_rates.append((terminal_error - optimal_error) / max(1, int(row["n_rows"])))
+            reached_proof = proof_time(row, optimal_error, horizon)
+            proof_states.append(1.0 if reached_proof is not None and reached_proof <= end else 0.0)
+
+        results[method] = {
+            "avg_primal_gap_integral": sum(integrals) / len(integrals),
+            "avg_excess_error_rate": sum(excess_error_rates) / len(excess_error_rates),
+            "optimality_proved_rate": sum(proof_states) / len(proof_states),
+        }
+    return results
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--inputs", nargs="+", default=["outputs/baseline_results.jsonl", "outputs/method_results.jsonl"])
+    parser.add_argument("--horizon", type=float, default=3.0)
+    parser.add_argument("--out", default="scoring/scores_train.json")
+    args = parser.parse_args()
+
+    start = 0.0
+    end = args.horizon / 2.0
+    scores = {
+        "experiments": {
+            EXPERIMENT: {
+                "slice": SLICE,
+                "window": {"start": start, "end": end, "horizon": args.horizon},
+                "results": summarize(read_records(args.inputs), args.horizon, start, end),
+            }
+        }
+    }
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(scores, indent=2) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
