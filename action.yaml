@@ -2,8 +2,8 @@
 # Once you set action to 'done', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: pending
+action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: ""
+notes: "Improvements: tightened train/test proof-certificate scoring against false immediate proofs; added explicit metric descriptions in reference.json; wrote DESIGN_NOTES.md. Notes: temporal split is useful for anytime behavior but runner should watch for over-similar train/test scores and small dataset coverage."

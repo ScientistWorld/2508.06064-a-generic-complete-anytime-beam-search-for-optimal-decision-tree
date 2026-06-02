@@ -5,7 +5,11 @@
       "weight": 0.35,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
-        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0}
+        "avg_primal_gap_integral": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Lower anytime primal gap integral rewards finding near-optimal feasible trees earlier in the search horizon."
+        }
       },
       "results": {
         "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 64.3},
@@ -22,7 +26,11 @@
       "weight": 0.25,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
-        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0}
+        "avg_primal_gap_integral": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Lower anytime primal gap integral rewards finding near-optimal feasible trees earlier in the search horizon."
+        }
       },
       "results": {
         "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 69.3},
@@ -39,7 +47,11 @@
       "weight": 0.20,
       "primary_metric": "optimality_proved_count",
       "metrics": {
-        "optimality_proved_count": {"higher_is_better": true, "coefficient": 1.0}
+        "optimality_proved_count": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Counts instances where the solver certifies the globally optimal constrained decision tree within the time limit."
+        }
       },
       "results": {
         "dl85_exact": {"type": "baseline", "optimality_proved_count": 11},
@@ -56,9 +68,21 @@
       "weight": 0.20,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
-        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0},
-        "avg_excess_error_rate": {"higher_is_better": false, "coefficient": -0.7},
-        "optimality_proved_rate": {"higher_is_better": true, "coefficient": 0.4}
+        "avg_primal_gap_integral": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Lower anytime primal gap integral rewards maintaining a better incumbent relative to the proven optimum over the scoring window."
+        },
+        "avg_excess_error_rate": {
+          "higher_is_better": false,
+          "coefficient": -0.7,
+          "description": "Lower final excess training-error rate rewards ending the scoring window closer to the optimal constrained tree."
+        },
+        "optimality_proved_rate": {
+          "higher_is_better": true,
+          "coefficient": 0.4,
+          "description": "Higher proof rate rewards methods that certify optimality rather than only returning heuristic incumbents."
+        }
       },
       "results": {
         "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},

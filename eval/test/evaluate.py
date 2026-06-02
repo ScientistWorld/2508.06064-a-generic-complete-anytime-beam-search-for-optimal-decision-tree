@@ -86,8 +86,9 @@ def proof_time(record: dict, optimal_error: int, horizon: float) -> float | None
         if event.get("optimal") and int(event["error"]) == optimal_error:
             return float(event.get("time", 0.0))
     if record.get("proved_optimal") and int(record.get("incumbent_error", -1)) == optimal_error:
-        if int(events[0]["error"]) == optimal_error:
-            return float(events[0].get("time", 0.0))
+        # The proof-rate constraint must be backed by the anytime trace. Some
+        # legacy records only have a terminal proved_optimal flag; count those
+        # as certified at the horizon, not as an immediate proof.
         return horizon
     return None
 
