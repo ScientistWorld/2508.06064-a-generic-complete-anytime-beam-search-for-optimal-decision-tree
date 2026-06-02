@@ -25,3 +25,11 @@
   scheduling, and evaluator optimality-credit checks.
 - Downgraded the active milestone pending a fresh compute-node rerun of the
   corrected code.
+
+### [2026-06-02 03:04] - method_runs
+- Fixed exact DL8.5 cache keys to include the active upper bound, preventing
+  bounded partial searches from being reused as globally exact results.
+- Changed evaluation to require a `dl85_exact` proved optimum for every scored
+  dataset/depth/feature-cap instance.
+- Verified on `tic-tac-toe` that restrictive CA-DL8.5 passes no longer report
+  false optimality at the old greedy error.

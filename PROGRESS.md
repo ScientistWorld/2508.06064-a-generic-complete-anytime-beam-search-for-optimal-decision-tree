@@ -52,6 +52,12 @@ Current turn audit updates:
 - Fixed Top-k* to use width `k` at the root and halve by tree level.
 - Changed optimality scoring so a method only receives proof credit when its
   claimed incumbent equals the exact optimum found for the same instance.
+- Fixed exact DL8.5 caching so upper-bound-pruned subsearches are not reused
+  under a different bound.
+- Tightened evaluation to derive the optimum only from proved `dl85_exact`
+  records, not from the proposed method's incumbent outputs.
+- Targeted `tic-tac-toe` audit now shows CA-DL8.5 no longer self-reports
+  optimality at error 150 when the exact constrained optimum is 137.
 - A fresh CPU job is being submitted to regenerate official scores after the
   BeamDL8.5 branch-and-bound patch.
 

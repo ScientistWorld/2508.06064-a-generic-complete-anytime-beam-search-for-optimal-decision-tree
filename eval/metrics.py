@@ -32,7 +32,7 @@ def gap(error: int, optimal_error: int) -> float:
 
 
 def summarize(records: list[dict], horizon: float) -> dict:
-    best_known = {}
+    exact_optima = {}
     for rec in records:
         instance = (
             rec["dataset"],
@@ -41,9 +41,8 @@ def summarize(records: list[dict], horizon: float) -> dict:
             rec.get("n_rows"),
             rec.get("n_features"),
         )
-        candidate = int(rec.get("optimal_error", rec["incumbent_error"]))
-        candidate = min(candidate, int(rec["incumbent_error"]))
-        best_known[instance] = min(best_known.get(instance, candidate), candidate)
+        if rec.get("method") == "dl85_exact" and rec.get("proved_optimal"):
+            exact_optima[instance] = int(rec["incumbent_error"])
     for rec in records:
         instance = (
             rec["dataset"],
@@ -52,7 +51,13 @@ def summarize(records: list[dict], horizon: float) -> dict:
             rec.get("n_rows"),
             rec.get("n_features"),
         )
-        rec.setdefault("optimal_error", best_known[instance])
+        if instance not in exact_optima:
+            raise ValueError(
+                "missing dl85_exact proved optimum for "
+                f"dataset={instance[0]!r}, depth={instance[1]}, minsup={instance[2]}, "
+                f"n_rows={instance[3]}, n_features={instance[4]}"
+            )
+        rec["optimal_error"] = exact_optima[instance]
 
     grouped: dict[str, list[dict]] = {}
     for rec in records:

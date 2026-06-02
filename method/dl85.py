@@ -55,7 +55,7 @@ class BinaryTreeSearch:
         self.minsup = minsup
         self._split_cache: dict[tuple[tuple[int, ...], int], tuple[tuple[int, ...], tuple[int, ...]]] = {}
         self._rank_cache: dict[tuple[tuple[int, ...], tuple[int, ...]], tuple[tuple[int, float], ...]] = {}
-        self._exact_cache: dict[tuple[tuple[int, ...], tuple[int, ...], int], SearchResult] = {}
+        self._exact_cache: dict[tuple[tuple[int, ...], tuple[int, ...], int, int], SearchResult] = {}
         self._beam_cache: dict[tuple[tuple[int, ...], tuple[int, ...], int, str, float, float], SearchResult] = {}
 
     def split(self, indices: tuple[int, ...], feature: int) -> tuple[tuple[int, ...], tuple[int, ...]]:
@@ -95,7 +95,7 @@ class BinaryTreeSearch:
         available = self.features if available is None else available
         depth = self.max_depth if depth is None else depth
         ub = len(indices) + 1 if ub is None else ub
-        key = (indices, available, depth)
+        key = (indices, available, depth, ub)
         leaf_err, pred = leaf_error(self.labels, indices)
         if depth == 0 or leaf_err == 0 or not available:
             return SearchResult(leaf_err, Tree(prediction=pred), True)
@@ -146,7 +146,7 @@ class BinaryTreeSearch:
         events = [{"time": 0.0, "error": incumbent.error, "optimal": False, "iteration": 0, "threshold": initial}]
         threshold = initial
         iteration = 0
-        final = incumbent
+        proved_optimal = incumbent.error == 0
         while time.perf_counter() - start < time_limit:
             iteration += 1
             result = self._beam(
@@ -160,24 +160,47 @@ class BinaryTreeSearch:
                 start=start,
                 time_limit=time_limit,
             )
-            final = result
             elapsed = time.perf_counter() - start
+            certified = result.error == 0 or (result.optimal and self._fully_relaxed(rule, threshold))
             if result.error < incumbent.error:
                 incumbent = result
-                events.append({"time": elapsed, "error": result.error, "optimal": result.optimal, "iteration": iteration, "threshold": threshold})
-            elif result.optimal:
+                events.append({"time": elapsed, "error": result.error, "optimal": certified, "iteration": iteration, "threshold": threshold})
+            elif certified:
                 events.append({"time": elapsed, "error": incumbent.error, "optimal": True, "iteration": iteration, "threshold": threshold})
-            if result.optimal or result.error == 0:
+            proved_optimal = proved_optimal or certified
+            if certified:
                 break
             threshold = self._relax_value(threshold, relax, iteration)
-            if threshold > len(self.features) + self.max_depth + 10:
+            if threshold > self._relaxation_limit(rule):
                 break
         return {
             "incumbent_error": incumbent.error,
-            "proved_optimal": final.optimal,
+            "proved_optimal": proved_optimal,
             "events": events,
             "iterations": iteration,
         }
+
+    def _fully_relaxed(self, rule: str, threshold: float) -> bool:
+        if rule == "purity":
+            return threshold > 1.0
+        if rule == "gain":
+            return threshold >= self.max_depth
+        if rule == "discrepancy":
+            return threshold >= self.max_depth * max(0, len(self.features) - 1)
+        if rule == "topk_star":
+            return threshold >= len(self.features) * (2 ** max(0, self.max_depth - 1))
+        return threshold >= len(self.features)
+
+    def _relaxation_limit(self, rule: str) -> float:
+        if rule == "purity":
+            return 1.0
+        if rule == "gain":
+            return float(self.max_depth)
+        if rule == "discrepancy":
+            return float(self.max_depth * max(0, len(self.features) - 1))
+        if rule == "topk_star":
+            return float(len(self.features) * (2 ** max(0, self.max_depth - 1)))
+        return float(len(self.features))
 
     @staticmethod
     def _relax_value(threshold: float, relax: str, iteration: int) -> float:
