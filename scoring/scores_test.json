@@ -1,0 +1,45 @@
+{
+  "experiments": {
+    "depth4_cp4im_anytime": {
+      "slice": "test",
+      "window": {
+        "start": 1.5,
+        "end": 3.0,
+        "horizon": 3.0
+      },
+      "methods_source": "scoring/scores_train.json",
+      "results": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_excess_error_rate": 0.006055879506315041,
+          "optimality_proved_rate": 0.0
+        },
+        "ca_discrepancy_monotonic": {
+          "avg_primal_gap_integral": 0.04397760988477806,
+          "avg_excess_error_rate": 0.0042457546452939155,
+          "optimality_proved_rate": 0.3333333333333333
+        },
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.04972222222222222,
+          "avg_excess_error_rate": 0.005289595981410826,
+          "optimality_proved_rate": 0.3333333333333333
+        },
+        "ca_topk_star_monotonic": {
+          "avg_primal_gap_integral": 0.04564164804515745,
+          "avg_excess_error_rate": 0.0042457546452939155,
+          "optimality_proved_rate": 0.3333333333333333
+        },
+        "dl85_exact": {
+          "avg_primal_gap_integral": 0.0,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        },
+        "top3": {
+          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_excess_error_rate": 0.006055879506315041,
+          "optimality_proved_rate": 0.0
+        }
+      }
+    }
+  }
+}
