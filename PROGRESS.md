@@ -11,8 +11,8 @@
 
 ## Results
 
-The fixed compute-node run completed successfully and passed
-`validate.py --compare`.
+The expanded compute-node run `6b016d76-286` completed successfully and passed
+`validate.py --compare` in the container.
 
 Scaled `depth4_cp4im_anytime` results after adding the exact DL8.5 baseline and
 expanding to `zoo-1`, `vote`, and `tic-tac-toe`:
@@ -24,7 +24,7 @@ expanding to `zoo-1`, `vote`, and `tic-tac-toe`:
   optimality proved rate 1.0
 - `ca_discrepancy_monotonic`: average primal gap integral 0.0511, excess error
   rate 0.00529, optimality proved rate 0.6667
-- `ca_topk_star_monotonic`: average primal gap integral 0.0591, excess error
+- `ca_topk_star_monotonic`: average primal gap integral 0.0588, excess error
   rate 0.00529, optimality proved rate 0.6667
 - `ca_gain_monotonic`: average primal gap integral 0.0546, excess error rate
   0.00529, optimality proved rate 1.0
@@ -42,6 +42,8 @@ separately recorded in `reference.json`.
 
 - Higher milestones would require extending the benchmark toward the paper's 25
   datasets, depths 6/7, 300-second horizons, and Blossom comparison.
+- The current environment is complete enough for downstream agents to improve
+  the scaled benchmark without needing GPU resources.
 
 ## Issues
 

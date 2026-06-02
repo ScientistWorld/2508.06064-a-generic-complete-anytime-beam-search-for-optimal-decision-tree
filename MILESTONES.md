@@ -15,3 +15,4 @@
 ### [2026-06-02 03:00] - core_claim_plus
 - Expanded the scaled benchmark from two to three CP4IM datasets by adding `zoo-1`.
 - Retained exact DL8.5 as the optimum anchor and validated CA-DL8.5 improvements on the expanded benchmark.
+- Compute job `6b016d76-286` reran the full expanded benchmark in the container and passed validation.

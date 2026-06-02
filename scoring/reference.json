@@ -49,7 +49,7 @@
         "top3": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},
         "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 0.0, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0},
         "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0511, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 0.6667},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0591, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 0.6667},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0588, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 0.6667},
         "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0546, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 1.0}
       }
     }
