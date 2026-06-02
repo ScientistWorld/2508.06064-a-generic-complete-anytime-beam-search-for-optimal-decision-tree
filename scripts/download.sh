@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-cd /home/user
+cd "$(dirname "$0")/.."
 
 mkdir -p data/downloads
 base="https://dtai-static.cs.kuleuven.be/CP4IM/datasets/data"

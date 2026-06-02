@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Temporal anytime split over existing CP4IM traces; 18 train metrics and 18 test metrics populated. Proposed methods improve on test vs train by about 0.010-0.017 primal-gap integral where later events occur; static baselines and exact certificate remain unchanged. Caveat: dl85_exact is saturated as the optimum-certificate baseline on this small scaled split."
+notes: "Hardened scripts/download.sh to run from a fresh clone path; verified CP4IM dataset URLs, banned-path search, shell syntax, and validate.py."
