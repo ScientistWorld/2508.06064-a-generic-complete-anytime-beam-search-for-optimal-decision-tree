@@ -18,17 +18,17 @@
           "optimality_proved_rate": 1.0
         },
         "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.051094032081142306,
+          "avg_primal_gap_integral": 0.05114775368190916,
           "avg_excess_error_rate": 0.005289595981410826,
           "optimality_proved_rate": 0.6666666666666666
         },
         "ca_topk_star_monotonic": {
-          "avg_primal_gap_integral": 0.05906355195813828,
+          "avg_primal_gap_integral": 0.058831927381498506,
           "avg_excess_error_rate": 0.005289595981410826,
           "optimality_proved_rate": 0.6666666666666666
         },
         "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.05462402621706799,
+          "avg_primal_gap_integral": 0.05459231295714572,
           "avg_excess_error_rate": 0.005289595981410826,
           "optimality_proved_rate": 1.0
         }
