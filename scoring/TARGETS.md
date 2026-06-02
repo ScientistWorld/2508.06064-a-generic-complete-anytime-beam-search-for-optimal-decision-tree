@@ -3,7 +3,7 @@
 ## Primary: depth4_cp4im_anytime
 
 Tests whether a decision-tree learner improves incumbent quality over a fixed
-time horizon on public binary transaction classification datasets.
+time horizon on three public binary transaction classification datasets.
 - **Metric**: `avg_primal_gap_integral` (lower is better)
 - **Run**: `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`
 

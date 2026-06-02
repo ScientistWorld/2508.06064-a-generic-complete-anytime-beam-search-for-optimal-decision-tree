@@ -14,19 +14,20 @@
 The fixed compute-node run completed successfully and passed
 `validate.py --compare`.
 
-Scaled `depth4_cp4im_anytime` results after adding the exact DL8.5 baseline:
-- `c45_greedy`: average primal gap integral 0.1022, excess error rate 0.00908,
+Scaled `depth4_cp4im_anytime` results after adding the exact DL8.5 baseline and
+expanding to `zoo-1`, `vote`, and `tic-tac-toe`:
+- `c45_greedy`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
-- `top3`: average primal gap integral 0.1022, excess error rate 0.00908,
+- `top3`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
 - `dl85_exact`: average primal gap integral 0.0, excess error rate 0.0,
   optimality proved rate 1.0
-- `ca_discrepancy_monotonic`: average primal gap integral 0.0767, excess error
-  rate 0.00793, optimality proved rate 0.5
-- `ca_topk_star_monotonic`: average primal gap integral 0.0885, excess error
-  rate 0.00793, optimality proved rate 0.5
-- `ca_gain_monotonic`: average primal gap integral 0.0819, excess error rate
-  0.00793, optimality proved rate 1.0
+- `ca_discrepancy_monotonic`: average primal gap integral 0.0511, excess error
+  rate 0.00529, optimality proved rate 0.6667
+- `ca_topk_star_monotonic`: average primal gap integral 0.0591, excess error
+  rate 0.00529, optimality proved rate 0.6667
+- `ca_gain_monotonic`: average primal gap integral 0.0546, excess error rate
+  0.00529, optimality proved rate 1.0
 
 These results support the paper's core claim at scaled size: a CA-DL8.5 variant
 finds better incumbents over time than greedy/static baselines while retaining
@@ -55,7 +56,7 @@ written successfully.
 ## Deviations from Paper
 
 - The paper averages 25 CP4IM datasets at depths 6 and 7 with 300 second
-  horizons. This reproduction starts with two public CP4IM datasets at depth 4,
+  horizons. This reproduction uses three public CP4IM datasets at depth 4,
   a 16-feature cap, and a short CPU horizon to fit the benchmark budget.
 - The implementation is pure Python and intended for small-scale faithful
   reproduction. It preserves the paper's algorithmic steps but is not optimized

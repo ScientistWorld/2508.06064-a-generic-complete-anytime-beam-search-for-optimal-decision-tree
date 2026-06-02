@@ -17,4 +17,4 @@ set -euo pipefail
 
 cd /home/user
 
-python -m baseline.run_baselines --datasets vote tic-tac-toe --depth 4 --max-features 16 --max-rows 0 --include-exact "$@"
+python -m baseline.run_baselines --datasets zoo-1 vote tic-tac-toe --depth 4 --max-features 16 --max-rows 0 --include-exact "$@"

@@ -24,7 +24,7 @@ complete anytime search.
 
 The full paper protocol uses 25 CP4IM binary transaction datasets with minimum
 support 1, maximum depths 6 and 7, and time budgets up to 300 seconds. This
-reproduction includes a scaled CPU benchmark using two public CP4IM datasets
-(`vote`, `tic-tac-toe`), maximum depth 4, minimum support 1, all rows, a
+reproduction includes a scaled CPU benchmark using three public CP4IM datasets
+(`zoo-1`, `vote`, `tic-tac-toe`), maximum depth 4, minimum support 1, all rows, a
 16-feature cap, and a short fixed horizon. All methods are evaluated from their output JSONL traces by
 `scripts/evaluate.sh`; evaluation does not import the reproduced method.
