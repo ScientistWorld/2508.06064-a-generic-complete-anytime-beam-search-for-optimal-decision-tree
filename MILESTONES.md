@@ -1,21 +1,20 @@
 # Reproduction Milestones
 
-**Current: none**
-
-<!-- Milestone levels (update "Current" above as you progress):
-  none             — just started, no meaningful progress yet
-  method_runs      — the paper's method executes end-to-end without errors
-  core_claim       — minimum experiment supports the paper's central claim
-  core_claim_plus  — core claim reproduced on additional settings
-  secondary_claims — secondary results or contributions reproduced
-  majority         — more than half of reported results reproduced
-  near_complete    — most results reproduced, only minor gaps remain
-  full             — all reported results reproduced
--->
+**Current: method_runs**
 
 ## Progress Log
 
-<!-- Write your progress here -->
+### [2026-06-02 02:33] - none
+- Read the paper markdown and identified the method, datasets, metrics, and
+  reported results.
+- Verified the CP4IM dataset host is reachable.
+
+### [2026-06-02 02:45] - method_runs
+- Implemented CP4IM loading, DL8.5 exact search, CA-DL8.5 restart search, and
+  greedy/Top-k baselines.
+- Ran a lightweight local smoke test that executed baseline, method, and
+  evaluation code end-to-end on a tiny `zoo-1` subset.
 
 ## Stop Justification
-- Completed at milestone `none`.
+- Not stopped. A CPU compute job is being submitted to evaluate the scaled
+  reproduction.

@@ -6,9 +6,9 @@
 # Usage:
 #   bash scripts/method.sh
 
-set -e
+set -euo pipefail
 
 cd /home/user
 
-# TODO: run the paper's method
-# TODO: call scripts/evaluate.sh to score
+python -m method.run_cadl85 "$@"
+bash scripts/evaluate.sh

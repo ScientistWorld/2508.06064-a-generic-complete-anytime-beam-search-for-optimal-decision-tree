@@ -1,17 +1,21 @@
 # Problem Definition
 
-What problem does this paper address? Write this so that someone with no knowledge of the paper can understand what needs to be solved and how success is measured.
-
-Do NOT describe the paper's method or solution here — only the problem itself. Think about if a future scientist agent try to solve this problem from scratch without knowing what approach the paper took. If you leak the solution, you compromise the benchmark.
-
 ## Research Question
 
-<!-- What problem or challenge does this paper tackle? What gap in existing work does it address? -->
+How can a binary classification decision tree be learned under maximum-depth
+and minimum-support constraints while producing strong incumbent trees early,
+not only after an exact search finishes?
 
 ## Why It Matters
 
-<!-- Why is this problem important? What would a good solution enable? Make it short -->
+Optimal decision-tree learners can give smaller and more accurate interpretable
+models than greedy induction, but exact search may spend a long time in
+unpromising parts of the search space. A useful solver should therefore expose
+good anytime behavior while still being able to prove optimality.
 
 ## Success Criteria
 
-<!-- What would a successful solution look like? What properties should it have? This is about the goal, not the paper's specific approach. Make it short -->
+A successful system returns feasible decision trees quickly, improves their
+training error as more time is allowed, and can eventually prove optimality for
+the constrained training problem. Evaluation must compare both incumbent quality
+over time and whether optimality is preserved.

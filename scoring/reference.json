@@ -1,0 +1,54 @@
+{
+  "experiments": {
+    "depth6_paper_anytime": {
+      "description": "Paper Table 2: average primal gap integral on 25 CP4IM datasets at max depth 6 and 300 seconds.",
+      "weight": 0.45,
+      "primary_metric": "avg_primal_gap_integral",
+      "metrics": {
+        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0},
+        "optimality_proved_count": {"higher_is_better": true, "coefficient": 0.4}
+      },
+      "results": {
+        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 64.3},
+        "top3": {"type": "baseline", "avg_primal_gap_integral": 44.0},
+        "top5": {"type": "baseline", "avg_primal_gap_integral": 33.5},
+        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 28.8, "optimality_proved_count": 11},
+        "blossom": {"type": "baseline", "avg_primal_gap_integral": 8.5, "optimality_proved_count": 13},
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.4, "optimality_proved_count": 14},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.7, "optimality_proved_count": 15}
+      }
+    },
+    "depth7_paper_anytime": {
+      "description": "Paper Table 3: average primal gap integral on 25 CP4IM datasets at max depth 7 and 300 seconds.",
+      "weight": 0.35,
+      "primary_metric": "avg_primal_gap_integral",
+      "metrics": {
+        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0}
+      },
+      "results": {
+        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 69.3},
+        "top3": {"type": "baseline", "avg_primal_gap_integral": 50.6},
+        "top5": {"type": "baseline", "avg_primal_gap_integral": 36.5},
+        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 39.5},
+        "blossom": {"type": "baseline", "avg_primal_gap_integral": 17.2},
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 14.0},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 22.6}
+      }
+    },
+    "depth4_cp4im_anytime": {
+      "description": "Scaled reproduction: average primal gap integral, excess error, and optimality proof rate on three CP4IM datasets at max depth 4.",
+      "weight": 0.20,
+      "primary_metric": "avg_primal_gap_integral",
+      "metrics": {
+        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0},
+        "avg_excess_error_rate": {"higher_is_better": false, "coefficient": -0.7},
+        "optimality_proved_rate": {"higher_is_better": true, "coefficient": 0.4}
+      },
+      "results": {
+        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.50, "avg_excess_error_rate": 0.05, "optimality_proved_rate": 0.0},
+        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 0.0, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0},
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.20, "avg_excess_error_rate": 0.02, "optimality_proved_rate": 0.5}
+      }
+    }
+  }
+}

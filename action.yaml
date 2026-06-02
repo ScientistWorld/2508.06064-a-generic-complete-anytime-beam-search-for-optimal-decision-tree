@@ -27,8 +27,8 @@
 #   milestone: core_claim
 #   notes: "Reproduced the core claim. Environment packaged."
 
-action: pending
-gpus: 1
-test: false
-milestone: none
-notes: ""
+action: submit
+gpus: 0
+test: true
+milestone: method_runs
+notes: "Run scaled CPU reproduction for CA-DL8.5 on three CP4IM datasets, then evaluate scores."

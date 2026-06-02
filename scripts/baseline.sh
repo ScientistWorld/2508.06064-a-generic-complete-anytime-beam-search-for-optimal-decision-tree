@@ -13,8 +13,8 @@
 # Usage:
 #   bash scripts/baseline.sh <name>
 
-set -e
+set -euo pipefail
 
 cd /home/user
 
-# TODO: run baseline
+python -m baseline.run_baselines "$@"
