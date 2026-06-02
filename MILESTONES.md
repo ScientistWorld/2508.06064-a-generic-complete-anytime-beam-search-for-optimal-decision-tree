@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
 
@@ -23,6 +23,14 @@
   by using full-row `vote` and `tic-tac-toe` with a 16-feature cap.
 - Verified locally that the fixed pipeline passes `validate.py --compare`.
 
+### [2026-06-02 03:00] - core_claim
+- Compute-node rerun completed with exit code 0 and `validate.py --compare`
+  passed.
+- On the scaled depth-4 CP4IM benchmark, CA-Discrepancy achieved lower average
+  primal gap integral than greedy/top3 while preserving partial optimality proof
+  behavior.
+- The environment now includes reusable method, baseline, evaluation, download,
+  and reproduction scripts.
+
 ## Stop Justification
-- Not stopped. A CPU compute job is being resubmitted to verify the fixed scaled
-  reproduction.
+- Completed at milestone `core_claim`.

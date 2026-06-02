@@ -27,8 +27,8 @@
 #   milestone: core_claim
 #   notes: "Reproduced the core claim. Environment packaged."
 
-action: submit
+action: done
 gpus: 0
 test: true
-milestone: method_runs
-notes: "Re-run fixed scaled CPU reproduction for CA-DL8.5 on vote and tic-tac-toe, then validate scores."
+milestone: core_claim
+notes: "Compute-node run passed validation and reproduced the core anytime-search claim on the scaled CP4IM benchmark."

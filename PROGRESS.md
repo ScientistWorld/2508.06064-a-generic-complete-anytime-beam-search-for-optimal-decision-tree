@@ -11,23 +11,29 @@
 
 ## Results
 
-The first compute job produced result traces but failed validation because the
-scaled reference block did not list every method written by the evaluator. The
-benchmark was also too easy under the initial row cap.
+The fixed compute-node run completed successfully and passed
+`validate.py --compare`.
 
-After removing the unnecessary exact-solve pass from method artifact generation
-and switching to full-row `vote` and `tic-tac-toe` with a 16-feature cap, the
-local lightweight run produced a nonzero anytime gap. CA-Discrepancy improved
-average primal gap integral over greedy/top3 while preserving partial
-optimality proof behavior. The fixed pipeline passes `validate.py --compare`
-locally and is being resubmitted for compute-node verification.
+Scaled `depth4_cp4im_anytime` results:
+- `c45_greedy`: average primal gap integral 0.0294, excess error rate 0.00115,
+  optimality proved rate 0.0
+- `top3`: average primal gap integral 0.0294, excess error rate 0.00115,
+  optimality proved rate 0.0
+- `ca_discrepancy_monotonic`: average primal gap integral 0.00704, excess error
+  rate 0.0, optimality proved rate 0.5
+- `ca_topk_star_monotonic`: average primal gap integral 0.0294, excess error
+  rate 0.00115, optimality proved rate 0.5
+- `ca_gain_monotonic`: average primal gap integral 0.0265, excess error rate
+  0.0, optimality proved rate 1.0
+
+These results support the paper's core claim at scaled size: a CA-DL8.5 variant
+finds better incumbents over time than greedy/static baselines while retaining
+some completeness behavior.
 
 ## Remaining
 
-- Re-run the fixed CPU job on the compute node.
-- Inspect `scoring/scores.json` and compare against the scaled benchmark target.
-- If the compute-node result matches the local result, update the milestone to
-  `core_claim`.
+- Higher milestones would require extending the benchmark toward the paper's 25
+  datasets, depths 6/7, 300-second horizons, and Blossom comparison.
 
 ## Issues
 
