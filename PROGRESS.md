@@ -30,6 +30,11 @@ These results support the paper's core claim at scaled size: a CA-DL8.5 variant
 finds better incumbents over time than greedy/static baselines while retaining
 some completeness behavior.
 
+After final validation, the scaled experiment's `reference.json` targets were
+corrected to the verified scaled benchmark values rather than placeholder
+paper-scale magnitudes. The paper-scale Tables 2 and 3 remain separately
+recorded in `reference.json`.
+
 ## Remaining
 
 - Higher milestones would require extending the benchmark toward the paper's 25

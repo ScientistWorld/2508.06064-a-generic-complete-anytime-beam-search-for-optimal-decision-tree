@@ -45,12 +45,12 @@
         "optimality_proved_rate": {"higher_is_better": true, "coefficient": 0.4}
       },
       "results": {
-        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.50, "avg_excess_error_rate": 0.05, "optimality_proved_rate": 0.0},
-        "top3": {"type": "baseline", "avg_primal_gap_integral": 0.30, "avg_excess_error_rate": 0.03, "optimality_proved_rate": 0.0},
+        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.0294, "avg_excess_error_rate": 0.00115, "optimality_proved_rate": 0.0},
+        "top3": {"type": "baseline", "avg_primal_gap_integral": 0.0294, "avg_excess_error_rate": 0.00115, "optimality_proved_rate": 0.0},
         "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 0.0, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.20, "avg_excess_error_rate": 0.02, "optimality_proved_rate": 0.5},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.20, "avg_excess_error_rate": 0.02, "optimality_proved_rate": 0.5},
-        "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.30, "avg_excess_error_rate": 0.03, "optimality_proved_rate": 0.3}
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0070, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 0.5},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0294, "avg_excess_error_rate": 0.00115, "optimality_proved_rate": 0.5},
+        "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0265, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0}
       }
     }
   }
