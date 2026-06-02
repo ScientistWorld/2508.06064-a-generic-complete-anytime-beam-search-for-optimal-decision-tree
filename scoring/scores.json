@@ -1,0 +1,38 @@
+{
+  "experiments": {
+    "depth4_cp4im_anytime": {
+      "results": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 0.3333333333333333,
+          "avg_excess_error_rate": 0.0015151515151515152,
+          "optimality_proved_rate": 0.0
+        },
+        "top3": {
+          "avg_primal_gap_integral": 0.0,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 0.0
+        },
+        "dl85_exact": {
+          "avg_primal_gap_integral": 0.0,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "avg_primal_gap_integral": 0.00030756656390925247,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        },
+        "ca_topk_star_monotonic": {
+          "avg_primal_gap_integral": 0.00014519166304833358,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        },
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.3333333333333333,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        }
+      }
+    }
+  }
+}
