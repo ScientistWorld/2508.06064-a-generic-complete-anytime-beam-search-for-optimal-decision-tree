@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Core-claim reproduction is packaged and validated: CA-DL8.5 improves anytime primal gap over greedy baselines on the scaled CP4IM benchmark, with exact-optimum constraint scoring."
+notes: "Final verification passed; scoring now uses deterministic restart/iteration effort, and the core-claim gym is ready."

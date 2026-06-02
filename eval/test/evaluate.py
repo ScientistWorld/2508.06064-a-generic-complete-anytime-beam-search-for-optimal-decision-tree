@@ -100,27 +100,34 @@ def exact_optima(records: list[dict]) -> dict[tuple, int]:
 
 
 def sorted_events(record: dict) -> list[dict]:
-    events = sorted(record.get("events", []), key=lambda event: float(event.get("time", 0.0)))
+    events = sorted(
+        record.get("events", []),
+        key=lambda event: float(event.get("iteration", 0.0)),
+    )
     if not events:
         raise ValueError(f"missing anytime events for {record.get('method')} on {record.get('dataset')}")
     return events
 
 
+def event_effort(event: dict, fallback: int) -> float:
+    return float(event.get("iteration", fallback))
+
+
 def incumbent_error_at(record: dict, when: float) -> int:
     events = sorted_events(record)
     current_error = int(events[0]["error"])
-    for event in events:
-        if float(event.get("time", 0.0)) > when:
+    for i, event in enumerate(events):
+        if event_effort(event, i) > when:
             break
         current_error = min(current_error, int(event["error"]))
     return current_error
 
 
-def proof_time(record: dict, optimal_error: int, horizon: float) -> float | None:
+def proof_effort(record: dict, optimal_error: int, horizon: float) -> float | None:
     events = sorted_events(record)
-    for event in events:
+    for i, event in enumerate(events):
         if event.get("optimal") and int(event["error"]) == optimal_error:
-            return float(event.get("time", 0.0))
+            return event_effort(event, i)
     if record.get("proved_optimal") and int(record.get("incumbent_error", -1)) == optimal_error:
         # The proof-rate constraint must be backed by the anytime trace. Some
         # legacy records only have a terminal proved_optimal flag; count those
@@ -135,22 +142,22 @@ def window_primal_integral(record: dict, optimal_error: int, start: float, end: 
 
     events = sorted_events(record)
     current_error = incumbent_error_at(record, start)
-    current_time = start
+    current_effort = start
     total = 0.0
 
-    for event in events:
-        event_time = min(float(event.get("time", 0.0)), end)
-        if event_time <= start:
+    for i, event in enumerate(events):
+        bounded_effort = min(event_effort(event, i), end)
+        if bounded_effort <= start:
             continue
-        if event_time > current_time:
-            total += gap(current_error, optimal_error) * (event_time - current_time)
+        if bounded_effort > current_effort:
+            total += gap(current_error, optimal_error) * (bounded_effort - current_effort)
         current_error = min(current_error, int(event["error"]))
-        current_time = event_time
-        if current_time >= end:
+        current_effort = bounded_effort
+        if current_effort >= end:
             break
 
-    if current_time < end:
-        total += gap(current_error, optimal_error) * (end - current_time)
+    if current_effort < end:
+        total += gap(current_error, optimal_error) * (end - current_effort)
     return total / (end - start)
 
 
@@ -200,7 +207,7 @@ def summarize(
                 )
             integrals.append(window_primal_integral(row, optimal_error, start, end))
             excess_error_rates.append((terminal_error - optimal_error) / max(1, int(row["n_rows"])))
-            reached_proof = proof_time(row, optimal_error, horizon)
+            reached_proof = proof_effort(row, optimal_error, horizon)
             proof_states.append(1.0 if reached_proof is not None and reached_proof <= end else 0.0)
 
         results[method] = {
@@ -215,7 +222,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("result_roots", nargs="*", help="optional result directories or JSONL files to score")
     parser.add_argument("--inputs", nargs="+", default=None)
-    parser.add_argument("--horizon", type=float, default=3.0)
+    parser.add_argument("--horizon", type=float, default=16.0, help="deterministic restart/iteration effort horizon")
     parser.add_argument("--out", default="scoring/scores_test.json")
     parser.add_argument("--train-scores", default="scoring/scores_train.json")
     args = parser.parse_args()

@@ -3,7 +3,8 @@
 ## Primary: depth4_cp4im_anytime
 
 Tests whether a decision-tree learner improves incumbent quality over a fixed
-time horizon on three public binary transaction classification datasets.
+restart/iteration effort horizon on three public binary transaction
+classification datasets.
 - **Metric**: `avg_primal_gap_integral` (lower is better)
 - **Run**: `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`
 
@@ -16,7 +17,7 @@ only returning a good heuristic tree.
 
 ## Benefit: depth4_cp4im_anytime
 
-Tests final incumbent training-error quality relative to the optimal constrained
-tree on the same datasets.
+Tests final incumbent training-error quality at the end of the fixed effort
+horizon relative to the optimal constrained tree on the same datasets.
 - **Metric**: `avg_excess_error_rate` (lower is better)
 - **Run**: `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`

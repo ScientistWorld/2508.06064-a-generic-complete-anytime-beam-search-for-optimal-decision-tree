@@ -2,9 +2,12 @@
 
 ## Metrics
 
-The primary metric is the average primal gap integral over a fixed time horizon.
-At each time, the primal gap is the relative difference between the current
-incumbent tree error and the optimal or best-known tree error. Lower is better.
+The primary metric is the average primal gap integral over a fixed search-effort
+horizon. At each recorded restart/relaxation iteration, the primal gap is the
+relative difference between the current incumbent tree error and the proven
+optimal tree error for the same constrained problem. Lower is better. The paper
+reports the analogous quantity over wall-clock time; this gym scores over
+iteration effort so the metric is not hardware-dependent.
 
 The reproduction also reports average excess error rate, defined as incumbent
 training error minus optimal training error divided by the number of examples.
@@ -26,5 +29,6 @@ The full paper protocol uses 25 CP4IM binary transaction datasets with minimum
 support 1, maximum depths 6 and 7, and time budgets up to 300 seconds. This
 reproduction includes a scaled CPU benchmark using three public CP4IM datasets
 (`zoo-1`, `vote`, `tic-tac-toe`), maximum depth 4, minimum support 1, all rows, a
-16-feature cap, and a short fixed horizon. All methods are evaluated from their output JSONL traces by
-`scripts/evaluate.sh`; evaluation does not import the reproduced method.
+16-feature cap, and a fixed 16-iteration effort horizon. All methods are
+evaluated from their output JSONL traces by `scripts/evaluate.sh`; evaluation
+does not import the reproduced method.

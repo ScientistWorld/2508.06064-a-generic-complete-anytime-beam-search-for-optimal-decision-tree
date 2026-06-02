@@ -3,12 +3,12 @@
     "depth4_cp4im_anytime": {
       "results": {
         "c45_greedy": {
-          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_primal_gap_integral": 0.0681045751633987,
           "avg_excess_error_rate": 0.006055879506315041,
           "optimality_proved_rate": 0.0
         },
         "top3": {
-          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_primal_gap_integral": 0.0681045751633987,
           "avg_excess_error_rate": 0.006055879506315041,
           "optimality_proved_rate": 0.0
         },
@@ -18,17 +18,17 @@
           "optimality_proved_rate": 1.0
         },
         "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.050285255814471304,
+          "avg_primal_gap_integral": 0.056195144724556494,
           "avg_excess_error_rate": 0.0042457546452939155,
           "optimality_proved_rate": 0.3333333333333333
         },
         "ca_topk_star_monotonic": {
-          "avg_primal_gap_integral": 0.05081438200360545,
+          "avg_primal_gap_integral": 0.05965790482859811,
           "avg_excess_error_rate": 0.0042457546452939155,
           "optimality_proved_rate": 0.3333333333333333
         },
         "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.05811725823332333,
+          "avg_primal_gap_integral": 0.038980000799853746,
           "avg_excess_error_rate": 0.002853966197138035,
           "optimality_proved_rate": 0.3333333333333333
         }

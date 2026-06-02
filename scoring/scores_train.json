@@ -4,28 +4,28 @@
       "slice": "train",
       "window": {
         "start": 0.0,
-        "end": 1.5,
-        "horizon": 3.0
+        "end": 8.0,
+        "horizon": 16.0
       },
       "results": {
         "c45_greedy": {
-          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_primal_gap_integral": 0.0681045751633987,
           "avg_excess_error_rate": 0.006055879506315041,
           "optimality_proved_rate": 0.0
         },
         "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.05659290174416456,
+          "avg_primal_gap_integral": 0.0681045751633987,
           "avg_excess_error_rate": 0.005289595981410826,
           "optimality_proved_rate": 0.0
         },
         "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.06651229424442445,
-          "avg_excess_error_rate": 0.005289595981410826,
+          "avg_primal_gap_integral": 0.04314065428036016,
+          "avg_excess_error_rate": 0.002853966197138035,
           "optimality_proved_rate": 0.3333333333333333
         },
         "ca_topk_star_monotonic": {
-          "avg_primal_gap_integral": 0.055987115962053434,
-          "avg_excess_error_rate": 0.005289595981410826,
+          "avg_primal_gap_integral": 0.0681045751633987,
+          "avg_excess_error_rate": 0.006055879506315041,
           "optimality_proved_rate": 0.0
         },
         "dl85_exact": {
@@ -34,7 +34,7 @@
           "optimality_proved_rate": 1.0
         },
         "top3": {
-          "avg_primal_gap_integral": 0.06810457516339868,
+          "avg_primal_gap_integral": 0.0681045751633987,
           "avg_excess_error_rate": 0.006055879506315041,
           "optimality_proved_rate": 0.0
         }

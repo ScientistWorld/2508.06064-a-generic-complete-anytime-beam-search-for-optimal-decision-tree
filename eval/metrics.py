@@ -5,23 +5,37 @@ import json
 from pathlib import Path
 
 
+def event_effort(event: dict, fallback: int) -> float:
+    """Machine-independent progress coordinate for anytime traces.
+
+    The paper reports primal integral over wall-clock time. For this gym we
+    score the same incumbent-gap trajectory over restart/relaxation iteration
+    numbers when present, because wall-clock timings vary across hardware.
+    Static baselines without iteration fields remain at effort 0.
+    """
+    return float(event.get("iteration", fallback))
+
+
 def primal_integral(events: list[dict], optimal_error: int, horizon: float) -> float:
-    events = sorted(events, key=lambda e: e.get("time", 0.0))
+    events = sorted(
+        ((event_effort(event, i), event) for i, event in enumerate(events)),
+        key=lambda item: item[0],
+    )
     if not events:
         return horizon
     total = 0.0
-    current_error = events[0]["error"]
-    current_time = 0.0
-    for event in events[1:]:
-        t = min(float(event["time"]), horizon)
-        if t > current_time:
-            total += gap(current_error, optimal_error) * (t - current_time)
+    current_error = int(events[0][1]["error"])
+    current_effort = 0.0
+    for effort, event in events[1:]:
+        bounded_effort = min(effort, horizon)
+        if bounded_effort > current_effort:
+            total += gap(current_error, optimal_error) * (bounded_effort - current_effort)
         current_error = min(current_error, int(event["error"]))
-        current_time = t
-        if current_time >= horizon:
+        current_effort = bounded_effort
+        if current_effort >= horizon:
             break
-    if current_time < horizon:
-        total += gap(current_error, optimal_error) * (horizon - current_time)
+    if current_effort < horizon:
+        total += gap(current_error, optimal_error) * (horizon - current_effort)
     return total / horizon
 
 
@@ -86,7 +100,7 @@ def summarize(records: list[dict], horizon: float) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inputs", nargs="+", default=["outputs/baseline_results.jsonl", "outputs/method_results.jsonl"])
-    parser.add_argument("--horizon", type=float, default=3.0)
+    parser.add_argument("--horizon", type=float, default=16.0, help="deterministic restart/iteration effort horizon")
     parser.add_argument("--out", default="scoring/scores.json")
     args = parser.parse_args()
 

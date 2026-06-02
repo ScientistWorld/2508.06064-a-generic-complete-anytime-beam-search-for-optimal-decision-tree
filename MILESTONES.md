@@ -41,3 +41,10 @@
 - Corrected CA-DL8.5 variants improve average primal gap integral over static
   greedy/Top-k baselines while optimality proof credit is now restricted to
   cases certified against exact DL8.5.
+
+### [2026-06-02 03:29] - core_claim
+- Final verification replaced wall-clock-based scoring with deterministic
+  restart/iteration-effort scoring and regenerated main, train, and test scores.
+- Verified dataset download URLs, method/evaluation separation, train/test
+  method-key matching, shell syntax, and `python validate.py --compare`.
+- Wrote `VERIFICATION.md`; the workspace remains at `core_claim`.

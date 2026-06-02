@@ -18,18 +18,19 @@ The corrected compute-node run `d59e1525-496` completed successfully and passed
 `validate.py --compare` in the container.
 
 Scaled `depth4_cp4im_anytime` results after the stricter exact-optimum audit on
-`zoo-1`, `vote`, and `tic-tac-toe`:
+`zoo-1`, `vote`, and `tic-tac-toe`. The primary integral is scored over
+restart/iteration effort, not wall-clock time:
 - `c45_greedy`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
 - `top3`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
 - `dl85_exact`: average primal gap integral 0.0, excess error rate 0.0,
   optimality proved rate 1.0
-- `ca_discrepancy_monotonic`: average primal gap integral 0.0503, excess error
+- `ca_discrepancy_monotonic`: average primal gap integral 0.0562, excess error
   rate 0.00425, optimality proved rate 0.3333
-- `ca_topk_star_monotonic`: average primal gap integral 0.0508, excess error
+- `ca_topk_star_monotonic`: average primal gap integral 0.0597, excess error
   rate 0.00425, optimality proved rate 0.3333
-- `ca_gain_monotonic`: average primal gap integral 0.0581, excess error rate
+- `ca_gain_monotonic`: average primal gap integral 0.0390, excess error rate
   0.00285, optimality proved rate 0.3333
 
 These corrected results support the core claim on the scaled benchmark:
@@ -60,6 +61,9 @@ Current turn audit updates:
   optimality at error 150 when the exact constrained optimum is 137.
 - Compute job `d59e1525-496` regenerated official scores after the BeamDL8.5
   branch-and-bound patch and exact-baseline-only scoring update.
+- Final verification changed scoring from wall-clock event times to deterministic
+  restart/iteration effort and regenerated `scores.json`, `scores_train.json`,
+  and `scores_test.json` from the existing JSONL traces.
 
 ## Remaining
 

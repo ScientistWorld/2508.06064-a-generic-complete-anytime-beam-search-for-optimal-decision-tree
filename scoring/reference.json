@@ -64,14 +64,15 @@
       }
     },
     "depth4_cp4im_anytime": {
-      "description": "Scaled reproduction: average primal gap integral, excess error, and optimality proof rate on three CP4IM datasets at max depth 4 with 16 selected features.",
+      "description": "Scaled reproduction: average primal gap integral over deterministic restart/iteration effort, excess error, and optimality proof rate on three CP4IM datasets at max depth 4 with 16 selected features.",
+      "notes": "This experiment is not reported in the paper. It is the gym's scaled CPU benchmark using the paper's constrained decision-tree task; the primal integral is evaluated over restart/iteration effort rather than wall-clock time to avoid hardware-dependent scoring.",
       "weight": 0.20,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
         "avg_primal_gap_integral": {
           "higher_is_better": false,
           "coefficient": -1.0,
-          "description": "Lower anytime primal gap integral rewards maintaining a better incumbent relative to the proven optimum over the scoring window."
+          "description": "Lower anytime primal gap integral rewards maintaining a better incumbent relative to the proven optimum over a fixed deterministic restart/iteration effort window."
         },
         "avg_excess_error_rate": {
           "higher_is_better": false,
@@ -88,9 +89,9 @@
         "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},
         "top3": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},
         "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 0.0, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0511, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 0.6667},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0588, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 0.6667},
-        "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0546, "avg_excess_error_rate": 0.00529, "optimality_proved_rate": 1.0}
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0562, "avg_excess_error_rate": 0.00425, "optimality_proved_rate": 0.3333},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0597, "avg_excess_error_rate": 0.00425, "optimality_proved_rate": 0.3333},
+        "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0390, "avg_excess_error_rate": 0.00285, "optimality_proved_rate": 0.3333}
       }
     }
   }
