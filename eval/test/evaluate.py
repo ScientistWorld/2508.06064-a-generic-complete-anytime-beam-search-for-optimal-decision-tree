@@ -40,6 +40,42 @@ def read_records(paths: list[str]) -> list[dict]:
     return records
 
 
+def result_inputs(result_roots: list[str], explicit_inputs: list[str] | None) -> list[str]:
+    if explicit_inputs:
+        return explicit_inputs
+
+    root_candidates: list[Path] = []
+    for root in result_roots:
+        base = Path(root)
+        if base.is_file():
+            root_candidates.append(base)
+            continue
+        root_candidates.extend(
+            [
+                base / "baseline_results.jsonl",
+                base / "method_results.jsonl",
+                base / "outputs" / "baseline_results.jsonl",
+                base / "outputs" / "method_results.jsonl",
+            ]
+        )
+
+    candidates = [candidate for candidate in root_candidates if candidate.exists()]
+    if not candidates:
+        candidates = [
+            Path("outputs/baseline_results.jsonl"),
+            Path("outputs/method_results.jsonl"),
+        ]
+
+    seen: set[Path] = set()
+    inputs: list[str] = []
+    for candidate in candidates:
+        normalized = candidate.resolve() if candidate.exists() else candidate
+        if normalized not in seen:
+            seen.add(normalized)
+            inputs.append(str(candidate))
+    return inputs
+
+
 def train_methods(path: str) -> list[str] | None:
     p = Path(path)
     if not p.exists():
@@ -177,7 +213,8 @@ def summarize(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--inputs", nargs="+", default=["outputs/baseline_results.jsonl", "outputs/method_results.jsonl"])
+    parser.add_argument("result_roots", nargs="*", help="optional result directories or JSONL files to score")
+    parser.add_argument("--inputs", nargs="+", default=None)
     parser.add_argument("--horizon", type=float, default=3.0)
     parser.add_argument("--out", default="scoring/scores_test.json")
     parser.add_argument("--train-scores", default="scoring/scores_train.json")
@@ -186,13 +223,14 @@ def main() -> None:
     start = args.horizon / 2.0
     end = args.horizon
     methods = train_methods(args.train_scores)
+    inputs = result_inputs(args.result_roots, args.inputs)
     scores = {
         "experiments": {
             EXPERIMENT: {
                 "slice": SLICE,
                 "window": {"start": start, "end": end, "horizon": args.horizon},
                 "methods_source": args.train_scores if methods is not None else "inputs",
-                "results": summarize(read_records(args.inputs), args.horizon, start, end, methods),
+                "results": summarize(read_records(inputs), args.horizon, start, end, methods),
             }
         }
     }
