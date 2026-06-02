@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
-test: true
-milestone: method_runs
-notes: "CPU test rerun of scripts/reproduce.sh and validate.py --compare after fixing CA-DL8.5 false optimality reporting, exact DL8.5 bound-aware caching, Top-k*, and exact-baseline-only scoring."
+test: false
+milestone: core_claim
+notes: "Corrected CA-DL8.5 scaled reproduction passed in compute job d59e1525-496; complete-anytime variants improve primal-gap integral over static baselines with conservative exact-DL8.5 proof scoring."

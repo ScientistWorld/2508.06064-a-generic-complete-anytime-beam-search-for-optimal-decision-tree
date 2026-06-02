@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
 
@@ -33,3 +33,11 @@
   dataset/depth/feature-cap instance.
 - Verified on `tic-tac-toe` that restrictive CA-DL8.5 passes no longer report
   false optimality at the old greedy error.
+
+### [2026-06-02 03:08] - core_claim
+- Reran the corrected scaled CP4IM benchmark in compute job `d59e1525-496`.
+- `python validate.py --compare` passed in the container after regenerating
+  `scoring/scores.json`.
+- Corrected CA-DL8.5 variants improve average primal gap integral over static
+  greedy/Top-k baselines while optimality proof credit is now restricted to
+  cases certified against exact DL8.5.

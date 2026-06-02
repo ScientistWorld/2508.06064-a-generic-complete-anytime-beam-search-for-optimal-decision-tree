@@ -14,28 +14,28 @@
 
 ## Results
 
-The expanded compute-node run `6b016d76-286` completed successfully and passed
+The corrected compute-node run `d59e1525-496` completed successfully and passed
 `validate.py --compare` in the container.
 
-Scaled `depth4_cp4im_anytime` results after adding the exact DL8.5 baseline and
-expanding to `zoo-1`, `vote`, and `tic-tac-toe`:
+Scaled `depth4_cp4im_anytime` results after the stricter exact-optimum audit on
+`zoo-1`, `vote`, and `tic-tac-toe`:
 - `c45_greedy`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
 - `top3`: average primal gap integral 0.0681, excess error rate 0.00606,
   optimality proved rate 0.0
 - `dl85_exact`: average primal gap integral 0.0, excess error rate 0.0,
   optimality proved rate 1.0
-- `ca_discrepancy_monotonic`: average primal gap integral 0.0511, excess error
-  rate 0.00529, optimality proved rate 0.6667
-- `ca_topk_star_monotonic`: average primal gap integral 0.0588, excess error
-  rate 0.00529, optimality proved rate 0.6667
-- `ca_gain_monotonic`: average primal gap integral 0.0546, excess error rate
-  0.00529, optimality proved rate 1.0
+- `ca_discrepancy_monotonic`: average primal gap integral 0.0503, excess error
+  rate 0.00425, optimality proved rate 0.3333
+- `ca_topk_star_monotonic`: average primal gap integral 0.0508, excess error
+  rate 0.00425, optimality proved rate 0.3333
+- `ca_gain_monotonic`: average primal gap integral 0.0581, excess error rate
+  0.00285, optimality proved rate 0.3333
 
-These results supported the paper's core claim for the earlier implementation,
-but the active milestone has been downgraded to `method_runs` after a stricter
-audit found that CA-DL8.5 optimality certification was too permissive. The next
-compute job will regenerate the scaled results with the corrected implementation.
+These corrected results support the core claim on the scaled benchmark:
+complete-anytime relaxations reduce the anytime primal gap relative to static
+greedy/Top-k starts, while the proof-rate constraint is conservatively scored
+only when the method's incumbent matches an exact DL8.5 certificate.
 
 After audit, the scaled experiment was recomputed against an exact DL8.5
 baseline so the primal gap uses a certified optimum rather than a best-known
@@ -58,8 +58,8 @@ Current turn audit updates:
   records, not from the proposed method's incumbent outputs.
 - Targeted `tic-tac-toe` audit now shows CA-DL8.5 no longer self-reports
   optimality at error 150 when the exact constrained optimum is 137.
-- A fresh CPU job is being submitted to regenerate official scores after the
-  BeamDL8.5 branch-and-bound patch.
+- Compute job `d59e1525-496` regenerated official scores after the BeamDL8.5
+  branch-and-bound patch and exact-baseline-only scoring update.
 
 ## Remaining
 
