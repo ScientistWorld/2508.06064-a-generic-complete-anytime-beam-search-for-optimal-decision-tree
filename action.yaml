@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Hardened scripts/download.sh to run from a fresh clone path; verified CP4IM dataset URLs, banned-path search, shell syntax, and validate.py."
+notes: "Core-claim reproduction is packaged and validated: CA-DL8.5 improves anytime primal gap over greedy baselines on the scaled CP4IM benchmark, with exact-optimum constraint scoring."
