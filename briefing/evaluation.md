@@ -32,3 +32,7 @@ reproduction includes a scaled CPU benchmark using three public CP4IM datasets
 16-feature cap, and a fixed 16-iteration effort horizon. All methods are
 evaluated from their output JSONL traces by `scripts/evaluate.sh`; evaluation
 does not import the reproduced method.
+
+The method runner enforces the same 16-restart cap used by the evaluator, with
+the paper-style timeout retained only as a guard against unexpectedly slow
+subproblems.

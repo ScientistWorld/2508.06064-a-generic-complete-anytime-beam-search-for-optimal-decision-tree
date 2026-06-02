@@ -71,6 +71,8 @@ Current turn audit updates:
   datasets, depths 6/7, 300-second horizons, and Blossom comparison.
 - The current environment is complete enough for downstream agents to improve
   the scaled benchmark without needing GPU resources.
+- Pending verification: a CPU test job is being submitted to regenerate the
+  benchmark with the new fixed 16-restart cap in the method runner.
 
 ## Issues
 
@@ -90,3 +92,6 @@ written successfully.
 - The implementation is pure Python and intended for small-scale faithful
   reproduction. It preserves the paper's algorithmic steps but is not optimized
   like the original C++/specialized implementation.
+- The scored reproduction uses a deterministic restart-iteration horizon rather
+  than wall-clock integration. This preserves the anytime trajectory being
+  measured while avoiding hardware-dependent scores.

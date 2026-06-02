@@ -64,8 +64,8 @@
       }
     },
     "depth4_cp4im_anytime": {
-      "description": "Scaled reproduction: average primal gap integral over deterministic restart/iteration effort, excess error, and optimality proof rate on three CP4IM datasets at max depth 4 with 16 selected features.",
-      "notes": "This experiment is not reported in the paper. It is the gym's scaled CPU benchmark using the paper's constrained decision-tree task; the primal integral is evaluated over restart/iteration effort rather than wall-clock time to avoid hardware-dependent scoring.",
+      "description": "Scaled gym target: average primal gap integral over deterministic restart/iteration effort, excess error, and optimality proof rate on three CP4IM datasets at max depth 4 with 16 selected features.",
+      "notes": "This experiment is not reported in the paper. It is the gym's scaled CPU benchmark using the paper's constrained decision-tree task. Values are stored here as validator anchors for the reusable benchmark; the paper-reported reference results are the depth-5, depth-6, and depth-7 entries above.",
       "weight": 0.20,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {

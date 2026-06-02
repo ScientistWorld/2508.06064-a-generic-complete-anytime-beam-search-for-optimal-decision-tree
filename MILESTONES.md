@@ -48,3 +48,10 @@
 - Verified dataset download URLs, method/evaluation separation, train/test
   method-key matching, shell syntax, and `python validate.py --compare`.
 - Wrote `VERIFICATION.md`; the workspace remains at `core_claim`.
+
+### [2026-06-02 03:33] - core_claim
+- Added a fixed 16-restart cap to the CA-DL8.5 runner so method generation and
+  evaluation use the same deterministic effort horizon.
+- Updated `scripts/run.sh` to regenerate baseline and method JSONL traces before
+  train/test evaluation and validation.
+- Submitting a CPU test job to verify the packaged workflow after this change.

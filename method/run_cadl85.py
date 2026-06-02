@@ -17,6 +17,12 @@ def main() -> None:
     parser.add_argument("--max-rows", type=int, default=0, help="0 means all rows")
     parser.add_argument("--max-features", type=int, default=0, help="0 means all features")
     parser.add_argument("--time-limit", type=float, default=3.0)
+    parser.add_argument(
+        "--max-iterations",
+        type=int,
+        default=16,
+        help="restart/relaxation iteration cap; <=0 disables the cap",
+    )
     parser.add_argument("--out", default="outputs/method_results.jsonl")
     args = parser.parse_args()
 
@@ -31,7 +37,11 @@ def main() -> None:
             ds = load_named(args.data_dir, name, max_rows=args.max_rows, max_features=args.max_features)
             search = BinaryTreeSearch(ds.rows, ds.labels, ds.features, max_depth=args.depth, minsup=args.minsup)
             for method_name, cfg in methods:
-                result = search.cadl85(time_limit=args.time_limit, **cfg)
+                result = search.cadl85(
+                    time_limit=args.time_limit,
+                    max_iterations=None if args.max_iterations <= 0 else args.max_iterations,
+                    **cfg,
+                )
                 record = {
                     "dataset": name,
                     "method": method_name,

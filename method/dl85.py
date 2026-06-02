@@ -139,7 +139,14 @@ class BinaryTreeSearch:
                 best = SearchResult(err, Tree(prediction=pred, feature=f, left=left.tree, right=right.tree), False)
         return best
 
-    def cadl85(self, rule: str, relax: str, time_limit: float, initial: float = 0.0) -> dict[str, Any]:
+    def cadl85(
+        self,
+        rule: str,
+        relax: str,
+        time_limit: float,
+        initial: float = 0.0,
+        max_iterations: int | None = None,
+    ) -> dict[str, Any]:
         start = time.perf_counter()
         indices = tuple(range(len(self.labels)))
         incumbent = SearchResult(*self.greedy(). __dict__.values())
@@ -147,7 +154,10 @@ class BinaryTreeSearch:
         threshold = initial
         iteration = 0
         proved_optimal = incumbent.error == 0
-        while time.perf_counter() - start < time_limit:
+        while (
+            time.perf_counter() - start < time_limit
+            and (max_iterations is None or iteration < max_iterations)
+        ):
             iteration += 1
             result = self._beam(
                 indices,
@@ -178,6 +188,7 @@ class BinaryTreeSearch:
             "proved_optimal": proved_optimal,
             "events": events,
             "iterations": iteration,
+            "max_iterations": max_iterations,
         }
 
     def _fully_relaxed(self, rule: str, threshold: float) -> bool:
