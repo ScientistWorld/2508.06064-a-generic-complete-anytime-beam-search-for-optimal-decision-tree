@@ -159,11 +159,9 @@ class BinaryTreeSearch:
             threshold = self._relax_value(threshold, relax, iteration)
             if threshold > len(self.features) + self.max_depth + 10:
                 break
-        opt = self.exact_dl85()
         return {
             "incumbent_error": incumbent.error,
-            "proved_optimal": final.optimal or incumbent.error == opt.error,
-            "optimal_error": opt.error,
+            "proved_optimal": final.optimal,
             "events": events,
             "iterations": iteration,
         }

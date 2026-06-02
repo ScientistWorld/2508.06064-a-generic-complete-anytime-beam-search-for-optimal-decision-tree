@@ -10,5 +10,5 @@ set -euo pipefail
 
 cd /home/user
 
-python -m method.run_cadl85 "$@"
-bash scripts/evaluate.sh
+python -m method.run_cadl85 --datasets vote tic-tac-toe --depth 4 --max-features 16 --max-rows 0 --time-limit 1.0 "$@"
+bash scripts/evaluate.sh --horizon 1.0

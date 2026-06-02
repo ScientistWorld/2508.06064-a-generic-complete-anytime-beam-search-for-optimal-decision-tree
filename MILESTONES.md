@@ -15,6 +15,14 @@
 - Ran a lightweight local smoke test that executed baseline, method, and
   evaluation code end-to-end on a tiny `zoo-1` subset.
 
+### [2026-06-02 02:55] - method_runs
+- Reviewed failed compute job. It produced method and baseline traces, then
+  failed validation because several scored method names were missing from the
+  scaled reference block.
+- Fixed the reference/evaluation mismatch and made the scaled benchmark harder
+  by using full-row `vote` and `tic-tac-toe` with a 16-feature cap.
+- Verified locally that the fixed pipeline passes `validate.py --compare`.
+
 ## Stop Justification
-- Not stopped. A CPU compute job is being submitted to evaluate the scaled
+- Not stopped. A CPU compute job is being resubmitted to verify the fixed scaled
   reproduction.

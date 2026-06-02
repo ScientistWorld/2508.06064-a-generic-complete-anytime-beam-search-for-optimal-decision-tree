@@ -32,6 +32,14 @@ def gap(error: int, optimal_error: int) -> float:
 
 
 def summarize(records: list[dict], horizon: float) -> dict:
+    best_known = {}
+    for rec in records:
+        candidate = int(rec.get("optimal_error", rec["incumbent_error"]))
+        candidate = min(candidate, int(rec["incumbent_error"]))
+        best_known[rec["dataset"]] = min(best_known.get(rec["dataset"], candidate), candidate)
+    for rec in records:
+        rec.setdefault("optimal_error", best_known[rec["dataset"]])
+
     grouped: dict[str, list[dict]] = {}
     for rec in records:
         grouped.setdefault(rec["method"], []).append(rec)

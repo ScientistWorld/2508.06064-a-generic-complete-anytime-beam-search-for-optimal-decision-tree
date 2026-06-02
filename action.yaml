@@ -31,4 +31,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Run scaled CPU reproduction for CA-DL8.5 on three CP4IM datasets, then evaluate scores."
+notes: "Re-run fixed scaled CPU reproduction for CA-DL8.5 on vote and tic-tac-toe, then validate scores."

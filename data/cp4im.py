@@ -43,6 +43,8 @@ def load_transaction_file(path: str | Path, name: str | None = None) -> BinaryDa
 
 
 def subset_dataset(ds: BinaryDataset, max_rows: int | None = None, max_features: int | None = None) -> BinaryDataset:
+    max_rows = None if max_rows is not None and max_rows <= 0 else max_rows
+    max_features = None if max_features is not None and max_features <= 0 else max_features
     rows = ds.rows[:max_rows] if max_rows else ds.rows
     labels = ds.labels[:max_rows] if max_rows else ds.labels
     counts = {f: 0 for f in ds.features}
