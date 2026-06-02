@@ -2,45 +2,41 @@
 
 ## Initial Assessment
 
-The workspace started at `core_claim` with a working CA-DL8.5 reproduction,
-generated CP4IM output traces, method-agnostic evaluation code, train/test score
-artifacts, and a passing `python validate.py --compare`. The claimed milestone
-was justified: the implementation follows the paper's branch-and-bound
-decision-tree search with complete-anytime restart/relaxation rules, and the
-scaled benchmark shows proposed variants improving over static greedy baselines.
+The workspace started this final check at `core_claim`. The core implementation,
+baseline runners, output traces, main scores, train/test scores, and packaging
+were already present. `python validate.py --compare` passed, the evaluator read
+method output artifacts rather than regenerating experiments, and the scored
+metrics used a deterministic effort coordinate rather than wall-clock time. The
+claimed milestone was justified.
 
 ## Issues Found
 
-- **Critical:** The primary scored primal-integral metric originally used
-  recorded wall-clock event timestamps. That made the gym score partly
-  hardware-dependent.
-- **Minor:** The scaled `depth4_cp4im_anytime` entry in `reference.json` did
-  not explicitly state that it is a gym benchmark rather than a paper-reported
-  table.
-- **Cosmetic:** Generated `__pycache__` directories were present in workspace
-  code directories.
+- **Minor:** `briefing/evaluation.md` named paper-specific variants in a
+  from-scratch-facing file.
+- **Minor:** `scoring/DIRECTION.md` used more specific search-control terms
+  than necessary for a high-level direction document.
+- **Cosmetic:** Generated `__pycache__` directories were present in source
+  directories.
 
 ## Fixes Applied
 
-- Changed `eval/metrics.py`, `eval/train/evaluate.py`, and
-  `eval/test/evaluate.py` to integrate incumbent primal gap over recorded
-  restart/iteration effort instead of wall-clock seconds.
-- Regenerated `scoring/scores.json`, `scoring/scores_train.json`, and
-  `scoring/scores_test.json` from existing JSONL traces.
-- Updated `briefing/evaluation.md`, `scoring/reference.json`,
-  `scoring/TARGETS.md`, `scoring/EXPERIMENTS.md`, and
-  `scoring/CONSTRAINTS.md` to describe the deterministic effort horizon and the
-  scaled benchmark clearly.
-- Removed generated Python cache directories from workspace code areas.
-- Verified all dataset URLs in `scripts/download.sh` with `curl -I -L`.
+- Rewrote `briefing/evaluation.md` to describe baseline and target categories
+  without naming the reproduced method's variants.
+- Neutralized `scoring/TARGETS.md` and `scoring/DIRECTION.md` wording around
+  the effort horizon and allowed exact-search family.
+- Removed generated Python cache directories from `data/`, `method/`,
+  `baseline/`, and `eval/`.
+- Re-ran `python validate.py --compare`; all scoring, separation, train/test,
+  and shared-path checks passed.
+- Re-checked shell syntax for the packaged scripts and verified the dataset
+  URLs in `scripts/download.sh` resolve successfully.
 
 ## Final Judgment
 
 The workspace is ready to serve as a research gym. Improve-mode agents can run
 the existing method and baselines, and from-scratch agents can use the
-method-agnostic problem, data, evaluation, constraints, and direction documents
-without learning the paper's implementation details from those files. The
-scoring now rewards incumbent quality over deterministic search effort, final
+method-agnostic problem, data, evaluation, constraints, and direction documents.
+The scoring rewards incumbent quality over deterministic search effort, final
 excess error, and an optimality-proof constraint.
 
 - Milestone: core_claim

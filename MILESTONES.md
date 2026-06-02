@@ -55,3 +55,10 @@
 - Updated `scripts/run.sh` to regenerate baseline and method JSONL traces before
   train/test evaluation and validation.
 - Submitting a CPU test job to verify the packaged workflow after this change.
+
+### [2026-06-02 03:38] - core_claim
+- Final verification confirmed `python validate.py --compare` passes, strict
+  method-agnostic files are clean, and packaged shell scripts parse.
+- Verified `scripts/download.sh` dataset URLs return HTTP 200.
+- Wrote the final `VERIFICATION.md` judgment and kept the workspace at
+  `core_claim`.

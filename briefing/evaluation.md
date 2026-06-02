@@ -3,11 +3,11 @@
 ## Metrics
 
 The primary metric is the average primal gap integral over a fixed search-effort
-horizon. At each recorded restart/relaxation iteration, the primal gap is the
-relative difference between the current incumbent tree error and the proven
-optimal tree error for the same constrained problem. Lower is better. The paper
-reports the analogous quantity over wall-clock time; this gym scores over
-iteration effort so the metric is not hardware-dependent.
+horizon. At each recorded effort step, the primal gap is the relative difference
+between the current incumbent tree error and the proven optimal tree error for
+the same constrained problem. Lower is better. The original study reports an
+analogous quantity over elapsed time; this gym scores over a method-reported
+effort coordinate so the metric is not hardware-dependent.
 
 The reproduction also reports average excess error rate, defined as incumbent
 training error minus optimal training error divided by the number of examples.
@@ -17,11 +17,12 @@ better and acts as the completeness constraint.
 
 ## Baselines and Targets
 
-The paper reports C4.5-style greedy trees, fixed Top-k search, standard DL8.5,
-Blossom, and several complete anytime variants. Its headline tables average the
-primal gap integral over CP4IM datasets at depths 6 and 7 with 300 second
-budgets. The strongest reported variants are discrepancy-guided and Top-k*
-complete anytime search.
+The paper compares simple greedy/static tree learners, exact tree learners, and
+anytime exact tree learners. Its headline tables average the primal gap integral
+over CP4IM datasets at depths 6 and 7 with 300-second budgets. The reusable gym
+focuses on the same scientific question at smaller scale: whether a constrained
+tree learner returns better incumbents across an effort horizon while preserving
+an optimality-certificate signal.
 
 ## Evaluation Protocol
 
@@ -29,10 +30,10 @@ The full paper protocol uses 25 CP4IM binary transaction datasets with minimum
 support 1, maximum depths 6 and 7, and time budgets up to 300 seconds. This
 reproduction includes a scaled CPU benchmark using three public CP4IM datasets
 (`zoo-1`, `vote`, `tic-tac-toe`), maximum depth 4, minimum support 1, all rows, a
-16-feature cap, and a fixed 16-iteration effort horizon. All methods are
+16-feature cap, and a fixed 16-step effort horizon. All methods are
 evaluated from their output JSONL traces by `scripts/evaluate.sh`; evaluation
 does not import the reproduced method.
 
-The method runner enforces the same 16-restart cap used by the evaluator, with
-the paper-style timeout retained only as a guard against unexpectedly slow
-subproblems.
+Each result record must include an `events` trace with incumbent errors and
+monotonic effort-step indices. Static methods can provide a single effort-zero
+event.

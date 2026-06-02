@@ -8,10 +8,10 @@ tree quality over time while retaining an eventual optimality guarantee.
 
 ## Core Contribution Scope
 
-Work within branch-and-bound, dynamic-programming, restart, beam, discrepancy,
-or related exact-search strategies for optimal decision trees. Improvements
-should change how the constrained tree search is guided, cached, bounded, or
-relaxed over time.
+Work within branch-and-bound, dynamic-programming, incremental exact-search,
+bounded-candidate, or related strategies for optimal decision trees.
+Improvements should change how the constrained tree search is guided, cached,
+bounded, or allocated across a fixed effort horizon.
 
 ## Out of Bounds
 
