@@ -8,6 +8,9 @@
   rule behavior.
 - Implemented greedy/Top-k baselines.
 - Implemented method-agnostic evaluation from JSONL traces.
+- Audited the BeamDL8.5 recursion and tightened it to carry incumbent upper
+  bounds through child subproblems, matching the paper's branch-and-bound
+  structure more closely.
 
 ## Results
 
@@ -29,14 +32,28 @@ expanding to `zoo-1`, `vote`, and `tic-tac-toe`:
 - `ca_gain_monotonic`: average primal gap integral 0.0546, excess error rate
   0.00529, optimality proved rate 1.0
 
-These results support the paper's core claim at scaled size: a CA-DL8.5 variant
-finds better incumbents over time than greedy/static baselines while retaining
-some completeness behavior.
+These results supported the paper's core claim for the earlier implementation,
+but the active milestone has been downgraded to `method_runs` after a stricter
+audit found that CA-DL8.5 optimality certification was too permissive. The next
+compute job will regenerate the scaled results with the corrected implementation.
 
 After audit, the scaled experiment was recomputed against an exact DL8.5
 baseline so the primal gap uses a certified optimum rather than a best-known
 incumbent from incomplete runs. The paper-scale Tables 2 and 3 remain
 separately recorded in `reference.json`.
+
+Current turn audit updates:
+- Corrected the paper reference metadata so depth-5 optimality proof counts are
+  represented separately from depth-6/depth-7 primal-integral tables.
+- Fixed the dataset constraint text to match the three datasets used by the
+  scaled benchmark: `zoo-1`, `vote`, and `tic-tac-toe`.
+- Added instance-level grouping in evaluation so best-known optima are not mixed
+  across different depths or feature caps.
+- Fixed Top-k* to use width `k` at the root and halve by tree level.
+- Changed optimality scoring so a method only receives proof credit when its
+  claimed incumbent equals the exact optimum found for the same instance.
+- A fresh CPU job is being submitted to regenerate official scores after the
+  BeamDL8.5 branch-and-bound patch.
 
 ## Remaining
 

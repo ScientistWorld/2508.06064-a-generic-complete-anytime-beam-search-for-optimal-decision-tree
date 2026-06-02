@@ -149,12 +149,24 @@ class BinaryTreeSearch:
         final = incumbent
         while time.perf_counter() - start < time_limit:
             iteration += 1
-            result = self._beam(indices, self.features, self.max_depth, rule, threshold, state=0.0, start=start, time_limit=time_limit)
+            result = self._beam(
+                indices,
+                self.features,
+                self.max_depth,
+                ub=incumbent.error,
+                rule=rule,
+                threshold=threshold,
+                state=0.0,
+                start=start,
+                time_limit=time_limit,
+            )
             final = result
             elapsed = time.perf_counter() - start
-            if result.error < incumbent.error or result.optimal:
+            if result.error < incumbent.error:
                 incumbent = result
                 events.append({"time": elapsed, "error": result.error, "optimal": result.optimal, "iteration": iteration, "threshold": threshold})
+            elif result.optimal:
+                events.append({"time": elapsed, "error": incumbent.error, "optimal": True, "iteration": iteration, "threshold": threshold})
             if result.optimal or result.error == 0:
                 break
             threshold = self._relax_value(threshold, relax, iteration)
@@ -175,42 +187,60 @@ class BinaryTreeSearch:
             return threshold + luby(iteration)
         return threshold + 1.0
 
-    def _beam(self, indices, available, depth, rule, threshold, state, start, time_limit) -> SearchResult:
+    def _beam(self, indices, available, depth, ub, rule, threshold, state, start, time_limit) -> SearchResult:
         leaf_err, pred = leaf_error(self.labels, indices)
         if depth == 0 or leaf_err == 0 or not available:
             return SearchResult(leaf_err, Tree(prediction=pred), True)
         if time.perf_counter() - start >= time_limit:
             return SearchResult(leaf_err, Tree(prediction=pred), False)
-        cache_key = (indices, available, depth, rule, round(float(threshold), 12), round(float(state), 12))
+        if self._prune(rule, state, threshold, depth):
+            return SearchResult(leaf_err, Tree(prediction=pred), False)
+        cache_key = (indices, available, depth, ub, rule, round(float(threshold), 12), self._state_key(state))
         cached = self._beam_cache.get(cache_key)
-        if cached is not None:
+        if cached is not None and cached.error <= ub:
             return cached
         ranked = self.ranked_features(indices, available)
         if not ranked:
             return SearchResult(leaf_err, Tree(prediction=pred), True)
         best_gain = ranked[0][1]
         best = SearchResult(leaf_err, Tree(prediction=pred), False)
+        child_ub = min(ub, leaf_err)
         all_opt = True
         for i, (f, gain) in enumerate(ranked):
-            next_state = self._next_state(rule, state, i, best_gain, gain, leaf_err, len(indices), depth)
-            if self._prune(rule, next_state, threshold, depth):
-                all_opt = False
-                continue
             left_idx, right_idx = self.split(indices, f)
             rem = tuple(x for x in available if x != f)
-            left = self._beam(left_idx, rem, depth - 1, rule, threshold, next_state, start, time_limit)
-            right = self._beam(right_idx, rem, depth - 1, rule, threshold, next_state, start, time_limit)
+            left_err, _ = leaf_error(self.labels, left_idx)
+            right_err, _ = leaf_error(self.labels, right_idx)
+            left_state = self._next_state(rule, state, i, best_gain, gain, left_err, len(left_idx), depth)
+            right_state = self._next_state(rule, state, i, best_gain, gain, right_err, len(right_idx), depth)
+            left = self._beam(left_idx, rem, depth - 1, child_ub, rule, threshold, left_state, start, time_limit)
+            if left.error >= child_ub:
+                all_opt = all_opt and left.optimal
+                continue
+            right = self._beam(
+                right_idx,
+                rem,
+                depth - 1,
+                child_ub - left.error,
+                rule,
+                threshold,
+                right_state,
+                start,
+                time_limit,
+            )
             err = left.error + right.error
             all_opt = all_opt and left.optimal and right.optimal
             if err < best.error:
                 best = SearchResult(err, Tree(prediction=pred, feature=f, left=left.tree, right=right.tree), left.optimal and right.optimal)
+                child_ub = err
+                if err == 0:
+                    break
         if all_opt and best.error <= leaf_err:
             best.optimal = True
         self._beam_cache[cache_key] = best
         return best
 
-    @staticmethod
-    def _next_state(rule, state, idx, best_gain, gain, error, size, depth):
+    def _next_state(self, rule, state, idx, best_gain, gain, error, size, depth):
         if rule == "discrepancy":
             return state + idx
         if rule == "gain":
@@ -218,17 +248,23 @@ class BinaryTreeSearch:
         if rule == "purity":
             return 1.0 - (error / max(1, size))
         if rule == "topk_star":
-            return idx
+            return (idx, self.max_depth - depth)
         return idx
 
-    @staticmethod
-    def _prune(rule, state, threshold, depth):
+    def _prune(self, rule, state, threshold, depth):
         if rule == "purity":
             return state >= threshold
         if rule == "topk_star":
-            local_k = max(1, int(threshold) // max(1, 2 ** max(0, depth - 1)))
-            return state >= local_k
+            idx, level = state if isinstance(state, tuple) else (state, 0)
+            local_k = max(1, int(threshold) // max(1, 2 ** int(level)))
+            return idx >= local_k
         return state > threshold if rule in {"discrepancy", "gain"} else state >= max(1, int(threshold))
+
+    @staticmethod
+    def _state_key(state):
+        if isinstance(state, tuple):
+            return tuple(round(float(x), 12) for x in state)
+        return round(float(state), 12)
 
 
 def luby(i: int) -> int:

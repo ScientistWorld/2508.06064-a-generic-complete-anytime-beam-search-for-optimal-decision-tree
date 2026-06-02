@@ -11,8 +11,8 @@
 The paper targets the poor anytime behavior of exact optimal decision-tree
 learners. CA-DL8.5 keeps DL8.5's branch-and-bound and caching machinery but
 adds complete anytime beam-search restarts guided by modular pruning rules.
-Across CP4IM benchmarks, discrepancy and Top-k* variants find better trees
-earlier than standard DL8.5 and maintain completeness.
+Across CP4IM benchmarks, discrepancy-guided search is strongest overall, while
+Top-k and Top-k* variants are also competitive and maintain completeness.
 
 ## Key Results
 
@@ -21,5 +21,5 @@ earlier than standard DL8.5 and maintain completeness.
   Blossom.
 - At depth 7 and 300 seconds, CA-Discrepancy reports 14.0 versus 39.5 for DL8.5
   and 17.2 for Blossom.
-- At depth 5 and 300 seconds, CA-Top-k* solves 15 of 25 instances, compared with
-  11 for DL8.5 and 13 for Blossom.
+- At depth 5 and 300 seconds, CA-Top-k and CA-Top-k* solve 15 of 25 instances,
+  compared with 11 for DL8.5 and 13 for Blossom.

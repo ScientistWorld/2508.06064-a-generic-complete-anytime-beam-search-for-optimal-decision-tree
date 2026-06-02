@@ -2,25 +2,24 @@
   "experiments": {
     "depth6_paper_anytime": {
       "description": "Paper Table 2: average primal gap integral on 25 CP4IM datasets at max depth 6 and 300 seconds.",
-      "weight": 0.45,
+      "weight": 0.35,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
-        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0},
-        "optimality_proved_count": {"higher_is_better": true, "coefficient": 0.4}
+        "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0}
       },
       "results": {
         "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 64.3},
         "top3": {"type": "baseline", "avg_primal_gap_integral": 44.0},
         "top5": {"type": "baseline", "avg_primal_gap_integral": 33.5},
-        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 28.8, "optimality_proved_count": 11},
-        "blossom": {"type": "baseline", "avg_primal_gap_integral": 8.5, "optimality_proved_count": 13},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.4, "optimality_proved_count": 14},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.7, "optimality_proved_count": 15}
+        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 28.8},
+        "blossom": {"type": "baseline", "avg_primal_gap_integral": 8.5},
+        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.4},
+        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.7}
       }
     },
     "depth7_paper_anytime": {
       "description": "Paper Table 3: average primal gap integral on 25 CP4IM datasets at max depth 7 and 300 seconds.",
-      "weight": 0.35,
+      "weight": 0.25,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
         "avg_primal_gap_integral": {"higher_is_better": false, "coefficient": -1.0}
@@ -33,6 +32,23 @@
         "blossom": {"type": "baseline", "avg_primal_gap_integral": 17.2},
         "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 14.0},
         "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 22.6}
+      }
+    },
+    "depth5_paper_optimality": {
+      "description": "Paper Figure 3: number of CP4IM instances solved to proven optimality within 300 seconds at max depth 5.",
+      "weight": 0.20,
+      "primary_metric": "optimality_proved_count",
+      "metrics": {
+        "optimality_proved_count": {"higher_is_better": true, "coefficient": 1.0}
+      },
+      "results": {
+        "dl85_exact": {"type": "baseline", "optimality_proved_count": 11},
+        "blossom": {"type": "baseline", "optimality_proved_count": 13},
+        "ca_purity": {"type": "proposed", "optimality_proved_count": 12},
+        "ca_gain": {"type": "proposed", "optimality_proved_count": 13},
+        "ca_discrepancy": {"type": "proposed", "optimality_proved_count": 14},
+        "ca_topk": {"type": "proposed", "optimality_proved_count": 15},
+        "ca_topk_star": {"type": "proposed", "optimality_proved_count": 15}
       }
     },
     "depth4_cp4im_anytime": {

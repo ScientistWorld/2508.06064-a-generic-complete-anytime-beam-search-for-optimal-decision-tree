@@ -34,11 +34,25 @@ def gap(error: int, optimal_error: int) -> float:
 def summarize(records: list[dict], horizon: float) -> dict:
     best_known = {}
     for rec in records:
+        instance = (
+            rec["dataset"],
+            rec.get("depth"),
+            rec.get("minsup"),
+            rec.get("n_rows"),
+            rec.get("n_features"),
+        )
         candidate = int(rec.get("optimal_error", rec["incumbent_error"]))
         candidate = min(candidate, int(rec["incumbent_error"]))
-        best_known[rec["dataset"]] = min(best_known.get(rec["dataset"], candidate), candidate)
+        best_known[instance] = min(best_known.get(instance, candidate), candidate)
     for rec in records:
-        rec.setdefault("optimal_error", best_known[rec["dataset"]])
+        instance = (
+            rec["dataset"],
+            rec.get("depth"),
+            rec.get("minsup"),
+            rec.get("n_rows"),
+            rec.get("n_features"),
+        )
+        rec.setdefault("optimal_error", best_known[instance])
 
     grouped: dict[str, list[dict]] = {}
     for rec in records:
@@ -50,7 +64,12 @@ def summarize(records: list[dict], horizon: float) -> dict:
             (r["incumbent_error"] - r["optimal_error"]) / max(1, r["n_rows"])
             for r in rows
         ]
-        solved = [1.0 if r.get("proved_optimal") else 0.0 for r in rows]
+        solved = [
+            1.0
+            if r.get("proved_optimal") and int(r["incumbent_error"]) == int(r["optimal_error"])
+            else 0.0
+            for r in rows
+        ]
         results[method] = {
             "avg_primal_gap_integral": sum(pis) / len(pis),
             "avg_excess_error_rate": sum(rel_errors) / len(rel_errors),

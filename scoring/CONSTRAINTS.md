@@ -2,8 +2,9 @@
 
 ## Data
 
-Use only the provided CP4IM datasets `vote` and `tic-tac-toe` when reporting the
-`depth4_cp4im_anytime` score. Do not add external datasets or labels.
+Use only the provided CP4IM datasets `zoo-1`, `vote`, and `tic-tac-toe` when
+reporting the `depth4_cp4im_anytime` score. Do not add external datasets or
+labels.
 
 ## Problem Setting
 
@@ -19,7 +20,7 @@ not edit `eval/` to import a particular method implementation.
 
 ## Compliance Checklist
 
-- [ ] Uses only `vote` and `tic-tac-toe` for `depth4_cp4im_anytime`
+- [ ] Uses only `zoo-1`, `vote`, and `tic-tac-toe` for `depth4_cp4im_anytime`
 - [ ] Keeps max depth 4, minimum support 1, all rows, and 16 selected features
 - [ ] Produces JSONL traces consumed by the standard evaluator
 - [ ] Does not modify evaluator code to call a method implementation
