@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Resume after worker loss: instances already built; score all registered solvers on train+test and run the better/weaker variants and shortcut probes through the hidden test."
+notes: "Hidden test rebuilt around an evaluator-owned count oracle (hidden CP4IM subsamples, counted effort, exact optima, completeness gate). Reference CA-Discrepancy beats DL8.5/brute force on 42/42 test instances; better variant +0.83 rank, weaker -0.58; all shortcut probes score worst. See HARDENING.md."
