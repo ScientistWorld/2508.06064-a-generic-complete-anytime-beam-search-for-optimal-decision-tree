@@ -1,0 +1,8 @@
+{
+  "case": "retime_shortcut",
+  "train_exit_code": 0,
+  "test_exit_code": 0,
+  "score_file_exists": true,
+  "stale_score_after_failure": false,
+  "wall_seconds": 0.3903806909947889
+}

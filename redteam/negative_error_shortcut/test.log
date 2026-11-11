@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/eval/test/evaluate.py", line 249, in <module>
+    main()
+  File "/home/user/eval/test/evaluate.py", line 240, in main
+    "results": summarize(read_records(inputs), args.horizon, start, end, methods),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/evaluate.py", line 204, in summarize
+    raise ValueError(
+ValueError: ca_gain_monotonic on zoo-1 has incumbent error -1 below proved optimum 0

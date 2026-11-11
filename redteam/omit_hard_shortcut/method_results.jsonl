@@ -1,0 +1,1 @@
+{"dataset": "zoo-1", "method": "ca_gain_monotonic", "depth": 4, "minsup": 1, "n_rows": 101, "n_features": 16, "incumbent_error": 0, "proved_optimal": true, "events": [{"time": 0.0, "error": 0, "optimal": true}]}

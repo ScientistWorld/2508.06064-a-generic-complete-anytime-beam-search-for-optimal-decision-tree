@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/eval/test/evaluate.py", line 249, in <module>
+    main()
+  File "/home/user/eval/test/evaluate.py", line 240, in main
+    "results": summarize(read_records(inputs), args.horizon, start, end, methods),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/evaluate.py", line 202, in summarize
+    terminal_error = incumbent_error_at(row, end)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/evaluate.py", line 118, in incumbent_error_at
+    current_error = int(events[0]["error"])
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'

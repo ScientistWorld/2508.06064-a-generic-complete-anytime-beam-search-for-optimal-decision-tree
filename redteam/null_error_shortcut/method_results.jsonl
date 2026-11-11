@@ -1,0 +1,3 @@
+{"dataset": "zoo-1", "method": "ca_gain_monotonic", "depth": 4, "minsup": 1, "n_rows": 101, "n_features": 16, "incumbent_error": null, "proved_optimal": false, "events": [{"iteration": 0, "error": null, "optimal": true}]}
+{"dataset": "vote", "method": "ca_gain_monotonic", "depth": 4, "minsup": 1, "n_rows": 435, "n_features": 16, "incumbent_error": null, "proved_optimal": false, "events": [{"iteration": 0, "error": null, "optimal": true}]}
+{"dataset": "tic-tac-toe", "method": "ca_gain_monotonic", "depth": 4, "minsup": 1, "n_rows": 958, "n_features": 16, "incumbent_error": null, "proved_optimal": false, "events": [{"iteration": 0, "error": null, "optimal": true}]}

@@ -1,0 +1,8 @@
+{
+  "case": "negative_error_shortcut",
+  "train_exit_code": 1,
+  "test_exit_code": 1,
+  "score_file_exists": false,
+  "stale_score_after_failure": false,
+  "wall_seconds": 0.38652359100524336
+}

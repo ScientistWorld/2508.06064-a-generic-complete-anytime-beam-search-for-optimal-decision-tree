@@ -1,0 +1,13 @@
+{
+  "experiments": {
+    "depth4_cp4im_anytime": {
+      "results": {
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.0,
+          "avg_excess_error_rate": 0.0,
+          "optimality_proved_rate": 1.0
+        }
+      }
+    }
+  }
+}

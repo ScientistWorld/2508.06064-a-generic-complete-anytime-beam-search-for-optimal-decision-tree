@@ -1,0 +1,9 @@
+{"dataset": "zoo-1", "method": "c45_greedy", "depth": 4, "minsup": 1, "n_rows": 101, "n_features": 16, "incumbent_error": 0, "proved_optimal": false, "events": [{"time": 0.0, "error": 0, "optimal": false}]}
+{"dataset": "zoo-1", "method": "top3", "depth": 4, "minsup": 1, "n_rows": 101, "n_features": 16, "incumbent_error": 0, "proved_optimal": false, "events": [{"time": 0.0, "error": 0, "optimal": false}]}
+{"dataset": "zoo-1", "method": "dl85_exact", "depth": 4, "minsup": 1, "n_rows": 101, "n_features": 16, "incumbent_error": 0, "proved_optimal": true, "events": [{"time": 0.0, "error": 0, "optimal": true}]}
+{"dataset": "vote", "method": "c45_greedy", "depth": 4, "minsup": 1, "n_rows": 435, "n_features": 16, "incumbent_error": 17, "proved_optimal": false, "events": [{"time": 0.0, "error": 17, "optimal": false}]}
+{"dataset": "vote", "method": "top3", "depth": 4, "minsup": 1, "n_rows": 435, "n_features": 16, "incumbent_error": 17, "proved_optimal": false, "events": [{"time": 0.0, "error": 17, "optimal": false}]}
+{"dataset": "vote", "method": "dl85_exact", "depth": 4, "minsup": 1, "n_rows": 435, "n_features": 16, "incumbent_error": 15, "proved_optimal": true, "events": [{"time": 0.0, "error": 15, "optimal": true}]}
+{"dataset": "tic-tac-toe", "method": "c45_greedy", "depth": 4, "minsup": 1, "n_rows": 958, "n_features": 16, "incumbent_error": 150, "proved_optimal": false, "events": [{"time": 0.0, "error": 150, "optimal": false}]}
+{"dataset": "tic-tac-toe", "method": "top3", "depth": 4, "minsup": 1, "n_rows": 958, "n_features": 16, "incumbent_error": 150, "proved_optimal": false, "events": [{"time": 0.0, "error": 150, "optimal": false}]}
+{"dataset": "tic-tac-toe", "method": "dl85_exact", "depth": 4, "minsup": 1, "n_rows": 958, "n_features": 16, "incumbent_error": 137, "proved_optimal": true, "events": [{"time": 0.0, "error": 137, "optimal": true}]}
