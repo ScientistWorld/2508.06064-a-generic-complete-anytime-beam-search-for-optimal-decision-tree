@@ -1,3 +1,9 @@
+> **Archival (iteration 11).** The cases below audited the pre-hardening evaluator
+> (JSONL traces scored by `eval/metrics.py`). That evaluator, `method/dl85.py` and
+> `baseline/run_baselines.py` were replaced by the oracle harness, so these scripts no
+> longer run. The current probes live in `redteam/hardening/` and are reported in
+> `HARDENING.md`.
+
 This is an audit, not a replacement method. Run `bash redteam/run_all.sh` on a
 compute node. Each case also has its own `run.sh`. Every test invocation is
 `bash scripts/evaluate_test.sh` without arguments, in a separate process, using

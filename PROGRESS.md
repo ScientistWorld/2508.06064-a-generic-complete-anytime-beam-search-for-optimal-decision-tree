@@ -1,5 +1,19 @@
 # Progress
 
+## Iteration 11 (hardening): current state
+
+- Rebuilt the benchmark around an evaluator-owned count oracle: hidden CP4IM
+  subsamples, 40 features, depth 4 (budget 20k counts) and depth 5 (budget 60k).
+  Exact optima come from an independent DP; completeness is a pass/fail
+  constraint.
+- CA-DL8.5 (`method/cadl85.py`) runs all five rules and three relaxations as
+  oracle solvers. The baselines are C4.5, Top-3, Top-5 and DL8.5.
+- Hidden-test reference (CA-Discrepancy, monotonic): PI 0.139 (d4) and 0.247
+  (d5), against DL8.5 at 0.311 and 0.495. A better variant scores +0.83 rank
+  and the no-cache ablation −0.58; all shortcut probes fail. See HARDENING.md.
+- Everything below describes earlier iterations and the replaced evaluator.
+
+
 ## What Works
 
 - Implemented CP4IM transaction loading.

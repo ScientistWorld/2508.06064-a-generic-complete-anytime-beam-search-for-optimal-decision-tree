@@ -1,3 +1,6 @@
+> **Superseded.** This report verified the pre-hardening gym. Iteration 11 rebuilt the
+> evaluator and benchmark; see `HARDENING.md`.
+
 # Verification Report
 
 ## Initial Assessment

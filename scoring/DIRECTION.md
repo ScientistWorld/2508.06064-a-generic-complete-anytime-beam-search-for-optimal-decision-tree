@@ -2,19 +2,24 @@
 
 ## Research Problem
 
-Improve anytime algorithms for exact constrained binary decision-tree learning.
-The target is not simply predictive accuracy; it is the trajectory of feasible
-tree quality over time while retaining an eventual optimality guarantee.
+Anytime search for exact, depth-limited, minimum-error decision trees:
+return good trees early under a limited budget of data requests, keep
+improving them, and remain able to certify the optimum.
 
 ## Core Contribution Scope
 
-Work within branch-and-bound, dynamic-programming, incremental exact-search,
-bounded-candidate, or related strategies for optimal decision trees.
-Improvements should change how the constrained tree search is guided, cached,
-bounded, or allocated across a fixed effort horizon.
+Improvements to how a complete search spends a limited data budget:
+exploration order and restart policies, rules for which branches to expand,
+bounds and certificates, reuse of information already obtained, and how the
+current best tree is assembled from partial results. Methods may be
+heuristic during the search but must remain complete.
 
 ## Out of Bounds
 
-Replacing the task with random forests, boosted trees, neural networks, or
-unconstrained greedy trees is out of scope. Using more data or changing the
-tree-depth/minimum-support problem to get easier numbers is also out of scope.
+- Incomplete heuristics that can never certify optimality (they fail the
+  completeness constraint).
+- Obtaining instance information outside the count oracle, e.g. matching
+  instances to public data.
+- Changing the problem (depth, support, budgets, instances) to get easier
+  numbers.
+- Replacing the task with ensembles, neural models or unconstrained trees.

@@ -1,7 +1,7 @@
 {
   "experiments": {
     "anytime_depth4": {
-      "description": "Anytime optimal-tree search at maximum depth 4 on hidden subsamples of CP4IM datasets (40 random features, 60% of rows, min support 1) with a budget of 20,000 itemset-count queries (about 20% of the itemset lattice).",
+      "description": "Anytime optimal-tree search at maximum depth 4 on hidden subsamples of CP4IM datasets (40 random de-duplicated features, 60% of rows up to 1000, min support 1; instances whose itemset lattice is under twice the budget, whose greedy tree is optimal, or whose optimum is below 10 are excluded) with a budget of 20,000 itemset-count queries (about 20% of the itemset lattice).",
       "notes": "Scaled gym experiment, not reported in the paper. Results are the gym's reference runs on the hidden test slice (deterministic: reruns are bit-identical). Solvers that fail the completeness constraint (no optimality proof on the completeness-check instances, whose budgets exceed their whole search space) or fail any run are scored with the worst value 1.0; the incomplete greedy / Top-k baselines therefore show 1.0 here (their unconstrained values are reported unranked in scores_test.json). The paper's own numbers (25 full CP4IM datasets, depths 5-7, 300 s, C++) are not on this scale and are kept under _paper_reported.",
       "weight": 0.4,
       "primary_metric": "avg_primal_gap_integral",
@@ -25,33 +25,33 @@
         },
         "ca_discrepancy_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.120597,
-          "avg_final_primal_gap": 0.07371
+          "avg_primal_gap_integral": 0.139077,
+          "avg_final_primal_gap": 0.08697
         },
         "ca_gain_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.191975,
-          "avg_final_primal_gap": 0.113795
+          "avg_primal_gap_integral": 0.248299,
+          "avg_final_primal_gap": 0.140155
         },
         "ca_purity": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.337406,
-          "avg_final_primal_gap": 0.299968
+          "avg_primal_gap_integral": 0.387997,
+          "avg_final_primal_gap": 0.357601
         },
         "ca_topk_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.128724,
-          "avg_final_primal_gap": 0.078767
+          "avg_primal_gap_integral": 0.145403,
+          "avg_final_primal_gap": 0.097583
         },
         "ca_topk_star_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.130933,
-          "avg_final_primal_gap": 0.090219
+          "avg_primal_gap_integral": 0.147737,
+          "avg_final_primal_gap": 0.108869
         },
         "dl85": {
           "type": "baseline",
-          "avg_primal_gap_integral": 0.240473,
-          "avg_final_primal_gap": 0.113795
+          "avg_primal_gap_integral": 0.310874,
+          "avg_final_primal_gap": 0.140155
         },
         "top3": {
           "type": "baseline",
@@ -63,10 +63,11 @@
           "avg_primal_gap_integral": 1.0,
           "avg_final_primal_gap": 1.0
         }
-      }
+      },
+      "n_test_instances": 24
     },
     "anytime_depth5": {
-      "description": "Anytime optimal-tree search at maximum depth 5 on hidden subsamples of CP4IM datasets (40 random features, 60% of rows, min support 1) with a budget of 60,000 itemset-count queries (under 8% of the itemset lattice). Closest to the paper's depth-6/7 anytime regime.",
+      "description": "Anytime optimal-tree search at maximum depth 5 on hidden subsamples of CP4IM datasets (40 random de-duplicated features, 60% of rows up to 1000, min support 1; instances whose itemset lattice is under twice the budget, whose greedy tree is optimal, or whose optimum is below 10 are excluded) with a budget of 60,000 itemset-count queries (under 8% of the itemset lattice). Closest to the paper's depth-6/7 anytime regime.",
       "notes": "Scaled gym experiment, not reported in the paper. Results are the gym's reference runs on the hidden test slice (deterministic: reruns are bit-identical). Solvers that fail the completeness constraint (no optimality proof on the completeness-check instances, whose budgets exceed their whole search space) or fail any run are scored with the worst value 1.0; the incomplete greedy / Top-k baselines therefore show 1.0 here (their unconstrained values are reported unranked in scores_test.json). The paper's own numbers (25 full CP4IM datasets, depths 5-7, 300 s, C++) are not on this scale and are kept under _paper_reported.",
       "weight": 0.6,
       "primary_metric": "avg_primal_gap_integral",
@@ -90,33 +91,33 @@
         },
         "ca_discrepancy_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.202387,
-          "avg_final_primal_gap": 0.13577
+          "avg_primal_gap_integral": 0.246665,
+          "avg_final_primal_gap": 0.190838
         },
         "ca_gain_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.303915,
-          "avg_final_primal_gap": 0.248165
+          "avg_primal_gap_integral": 0.378373,
+          "avg_final_primal_gap": 0.364643
         },
         "ca_purity": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.447297,
-          "avg_final_primal_gap": 0.406348
+          "avg_primal_gap_integral": 0.47528,
+          "avg_final_primal_gap": 0.449638
         },
         "ca_topk_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.208493,
-          "avg_final_primal_gap": 0.15188
+          "avg_primal_gap_integral": 0.248143,
+          "avg_final_primal_gap": 0.193999
         },
         "ca_topk_star_monotonic": {
           "type": "proposed",
-          "avg_primal_gap_integral": 0.222974,
-          "avg_final_primal_gap": 0.172866
+          "avg_primal_gap_integral": 0.255249,
+          "avg_final_primal_gap": 0.20879
         },
         "dl85": {
           "type": "baseline",
-          "avg_primal_gap_integral": 0.421992,
-          "avg_final_primal_gap": 0.310722
+          "avg_primal_gap_integral": 0.494518,
+          "avg_final_primal_gap": 0.447727
         },
         "top3": {
           "type": "baseline",
@@ -128,7 +129,8 @@
           "avg_primal_gap_integral": 1.0,
           "avg_final_primal_gap": 1.0
         }
-      }
+      },
+      "n_test_instances": 18
     }
   },
   "constraints": {

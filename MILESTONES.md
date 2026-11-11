@@ -62,3 +62,13 @@
 - Verified `scripts/download.sh` dataset URLs return HTTP 200.
 - Wrote the final `VERIFICATION.md` judgment and kept the workspace at
   `core_claim`.
+
+### [2026-11-11] - core_claim (iteration 11, hardening)
+- Replaced the trace-based evaluator with an oracle harness: solvers get class
+  counts only from the evaluator, effort is counted by the evaluator, trees and
+  proofs are verified against hidden data, and exact optima are computed
+  independently.
+- On the hidden test (42 instances, depth 4/5), CA-Discrepancy beats DL8.5,
+  Gain, Purity, brute-force enumeration and the no-cache ablation on every
+  instance, matching the paper's direction. A better variant beats the
+  reference on 41 of 42 instances. All shortcut probes score worst values.

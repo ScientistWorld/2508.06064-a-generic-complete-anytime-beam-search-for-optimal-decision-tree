@@ -1,27 +1,36 @@
 # Scientist Constraints
 
-## Data
+## Data access
 
-Use only the provided CP4IM datasets `zoo-1`, `vote`, and `tic-tac-toe` when
-reporting the `depth4_cp4im_anytime` score. Do not add external datasets or
-labels.
+- A solver obtains information about an instance **only** through the oracle
+  protocol (briefing/evaluation.md). It must not read the CP4IM files in
+  `data/downloads/`, any copy of them, or any file under `eval/` (instances,
+  answers, harness state), and must not fetch data from the network. Bundling
+  public data to identify an instance and solve it offline is a violation,
+  even though the evaluator cannot detect it.
+- Counts are charged by the evaluator. Do not try to obtain counts by any
+  other channel.
 
-## Problem Setting
+## Fixed by the evaluator (do not change)
 
-Keep maximum depth 4, minimum support 1, all rows, the 16-feature cap, and the
-16-iteration effort horizon used by the scripts unless a new experiment name is
-added. The benchmark is about anytime search behavior under the same
-constrained optimal-tree problem, not about making the task easier by changing
-constraints.
+- Instances, their optimal errors, budgets, maximum depths, minimum support
+  and the completeness-check instances (`eval/train/`, `eval/test/`).
+- The metrics and the failure rules in `eval/*/evaluate.py` and
+  `eval/*/harness.py`.
+- The baselines are context only; changing them changes nothing that is ranked.
 
-## Evaluation
+## Your solver
 
-Report scores only through `scripts/evaluate.sh` from JSONL output traces. Do
-not edit `eval/` to import a particular method implementation.
+- Register it in `method/solvers.json` as a command; it is run once per
+  instance with the workspace as working directory.
+- It must be complete: given a budget larger than the whole search space, it
+  must end with a tree whose optimality the obtained counts certify.
+- It must exit with status 0 and stay under the wall-clock safety cap
+  (1200 s per instance). Wall-clock time is otherwise not scored.
 
 ## Compliance Checklist
 
-- [ ] Uses only `zoo-1`, `vote`, and `tic-tac-toe` for `depth4_cp4im_anytime`
-- [ ] Keeps max depth 4, minimum support 1, all rows, 16 selected features, and the 16-iteration effort horizon
-- [ ] Produces JSONL traces consumed by the standard evaluator
-- [ ] Does not modify evaluator code to call a method implementation
+- [ ] Solver uses only oracle counts (no dataset files, no eval/ files, no network)
+- [ ] Solver is registered in `method/solvers.json` and runs without arguments from the evaluator
+- [ ] Solver passes the completeness check on the train slice
+- [ ] `eval/`, the instance files and the budgets are unmodified
