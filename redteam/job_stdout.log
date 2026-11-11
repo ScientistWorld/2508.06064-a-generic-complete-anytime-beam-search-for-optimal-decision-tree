@@ -1,0 +1,30 @@
+[hive] This stdout log is managed by Hive.
+[hive] job_id: f4df9c11
+[hive] host: node
+[hive] node_id: 5b56c1bb00c851f2c3f93b346fd15ddec87104a85e26c62af4985535
+[hive] user: nexus/user (remote)
+[hive] resource: gpu-cpu
+[hive] gpus: 0
+[hive] cpus: 1
+[hive] workdir: /home/user
+[hive] timeout_sec: 21600
+[hive] started_at: 2026-11-11 07:27:33 EST
+[hive] command: apptainer exec --containall --cleanenv --env HF_HOME=/home/user/shared/hf_cache --env TRANSFORMERS_CACHE=/home/user/shared/hf_cache --env HF_DATASETS_CACHE=/home/user/shared/hf_cache/datasets --env TORCH_HOME=/home/user/shared/hf_cache/torch --bind /home/user/scratch/AgentWorkspaces/workspaces/2508.06064:/home/user --overlay /home/user/scratch/AgentWorkspaces/workspaces/2508.06064/environment/overlay.img:ro --bind /home/user/scratch/AgentWorkspaces/shared/datasets:/home/user/shared/datasets:ro --bind /home/user/scratch/AgentWorkspaces/shared/models:/home/user/shared/models:ro --bind /home/user/scratch/AgentWorkspaces/shared/hf_cache:/home/user/shared/hf_cache /home/user/scratch/AgentWorkspaces/workspaces/2508.06064/environment/container.sif bash -c 'cd /home/user && bash /home/user/scripts/run.sh'
+{"case": "reference_seed0", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 24.023522107003373}
+{"case": "reference_seed1", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 18.15645271599351}
+{"case": "reference_seed2", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 18.15054472499469}
+{"case": "better_more_search", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 50.415921441002865}
+{"case": "weaker_no_restarts", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.6665172220091335}
+{"case": "bruteforce_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.6604718159942422}
+{"case": "copy_answers_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.39468933099124115}
+{"case": "retime_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.3903806909947889}
+{"case": "comparison_replacement_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.7587945459963521}
+{"case": "omit_hard_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.5552631000027759}
+{"case": "duplicate_easy_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.5070043869927758}
+{"case": "no_proof_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.4423805230035214}
+{"case": "filter_methods_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.3880113449995406}
+{"case": "direct_scores_shortcut", "train_exit_code": 0, "test_exit_code": 0, "score_file_exists": true, "stale_score_after_failure": false, "wall_seconds": 0.41753868000523653}
+{"case": "negative_error_shortcut", "train_exit_code": 1, "test_exit_code": 1, "score_file_exists": false, "stale_score_after_failure": false, "wall_seconds": 0.38652359100524336}
+{"case": "empty_output_shortcut", "train_exit_code": 0, "test_exit_code": 1, "score_file_exists": false, "stale_score_after_failure": false, "wall_seconds": 0.3407147440011613}
+{"case": "null_error_shortcut", "train_exit_code": 1, "test_exit_code": 1, "score_file_exists": false, "stale_score_after_failure": false, "wall_seconds": 0.34350119199370965}
+{"case": "stale_failure_shortcut", "train_exit_code": 0, "test_exit_code": 1, "score_file_exists": true, "stale_score_after_failure": true, "wall_seconds": 0.3870535629976075}

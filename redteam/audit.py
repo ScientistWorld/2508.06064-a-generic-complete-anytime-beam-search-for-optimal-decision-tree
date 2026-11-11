@@ -214,7 +214,9 @@ def restore():
         return
     for name in json.loads((initial/'paths.json').read_text()):
         # The submit/done protocol is set by the active agent after the job.
-        if name == 'action.yaml':
+        # Never rewrite the currently executing submission shell script: bash
+        # reads it incrementally. Restore that file separately with git.
+        if name in ['action.yaml', 'scripts/run.sh']:
             continue
         source, destination = initial/name, ROOT/name
         if source.exists():
@@ -225,6 +227,12 @@ def restore():
 
 
 def summarize():
+    scoring_config = json.loads((ROOT/'scoring/reference.json').read_text())
+    experiment_config = scoring_config['experiments'][EXPERIMENT]
+    metric_specs = {m: (cfg['higher_is_better'], abs(cfg['coefficient']))
+                    for m,cfg in experiment_config['metrics'].items()}
+    assert metric_specs == METRICS, 'Update the report when the scoring definition changes'
+    weight = experiment_config['weight']
     all_results, statuses = {}, {}
     for case in CASES:
         folder = AUDIT/case
@@ -234,9 +242,12 @@ def summarize():
         if (folder/'scores_test.json').exists():
             data = json.loads((folder/'scores_test.json').read_text())
             all_results[case] = data['experiments'][EXPERIMENT]['results']
-    reference = all_results['reference_seed0'][METHOD]
+    archived = json.loads((AUDIT/'reference_snapshot/scores_test.json').read_text())
+    archived_results = archived['experiments'][EXPERIMENT]['results']
+    reference = archived_results[METHOD]
     valid = {case: results.get(METHOD, {}) for case,results in all_results.items()
              if statuses[case]['test_exit_code'] == 0}
+    valid['packaged_reference'] = reference
     scales = {metric: statistics.pstdev([r[metric] for r in valid.values() if metric in r])
               for metric in METRICS}
 
@@ -246,24 +257,31 @@ def summarize():
             if metric not in row or not denominator[metric]:
                 continue
             improvement = (row[metric]-reference[metric]) * (1 if higher else -1)
-            value += .2 * abs(coefficient) * improvement/denominator[metric]
+            value += weight * abs(coefficient) * improvement/denominator[metric]
         return value
 
     comparisons = {}
-    for case,results in all_results.items():
-        row = results.get(METHOD, {})
+    for case in statuses:
+        row = all_results.get(case, {}).get(METHOD, {})
         pair_scales = {metric: abs(row.get(metric, reference[metric])-reference[metric])/2
                        for metric in METRICS}
         comparisons[case] = {'metrics': row, 'test_exit_code': statuses[case]['test_exit_code'],
-                             'audit_pool_rank_delta': rank(row, scales),
-                             'two_attempt_rank_delta': rank(row, pair_scales)}
+                             'audit_pool_rank_delta': rank(row, scales) if statuses[case]['test_exit_code'] == 0 else None,
+                             'two_attempt_rank_delta': rank(row, pair_scales) if statuses[case]['test_exit_code'] == 0 else None,
+                             'score_file_rank_if_exit_status_ignored': rank(row, scales)}
     seeds = [all_results[f'reference_seed{i}'][METHOD] for i in range(3)]
     summary = {'experiment': EXPERIMENT, 'reference_method': METHOD,
+               'experiment_weight': weight, 'metric_specs': metric_specs,
                'reference_metrics': reference, 'audit_pool_metric_stddev': scales,
                'rank_explanation': 'weight .2; abs(coefficients) 1,.7,.4; population std; missing skipped; failed jobs flagged separately',
                'comparisons': comparisons, 'all_method_metrics': all_results,
                'seed_spread': {m: max(s[m] for s in seeds)-min(s[m] for s in seeds) for m in METRICS},
                'seed_rank_spread': max(rank(s, scales) for s in seeds)-min(rank(s,scales) for s in seeds),
+               'all_method_seed_spread': {
+                   method: {m: max(all_results[f'reference_seed{i}'][method][m] for i in range(3))
+                               - min(all_results[f'reference_seed{i}'][method][m] for i in range(3))
+                            for m in METRICS}
+                   for method in archived_results},
                'statuses': statuses}
     (AUDIT/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
 
