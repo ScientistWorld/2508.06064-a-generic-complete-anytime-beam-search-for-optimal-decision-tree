@@ -2,27 +2,44 @@
 
 - **Paper ID:** 2508.06064
 - **Title:** A Generic Complete Anytime Beam Search for Optimal Decision Tree
-- **Domain:** Interpretable Machine Learning / Combinatorial Optimization
-- **TL;DR:** The paper turns DL8.5 exact decision-tree learning into a complete
-  anytime search by restarting with progressively relaxed pruning rules.
+- **Domain:** Interpretable machine learning / combinatorial optimization
+- **TL;DR:** CA-DL8.5 makes DL8.5's exact decision-tree search anytime by
+  restarting it under pruning rules that are relaxed after every restart. The
+  search stays complete.
 
 ## Short Summary
 
-The paper targets the poor anytime behavior of exact optimal decision-tree
-learners. CA-DL8.5 keeps DL8.5's branch-and-bound and caching machinery but
-adds complete anytime beam-search restarts guided by modular pruning rules.
-Across CP4IM benchmarks, discrepancy-guided search is strongest overall, while
-Top-k and Top-k* variants are also competitive and maintain completeness.
+Exact optimal-tree learners such as DL8.5 search depth-first and, when
+interrupted, often hold a tree worse than a greedy one. CA-DL8.5 keeps DL8.5's
+branch-and-bound and caching but adds Complete Anytime Beam Search restarts,
+guided by modular rules: Purity, Gain, Discrepancy, Top-k and Top-k\*. On 25
+CP4IM datasets, Discrepancy gives the best anytime behaviour (lowest primal gap
+integral), and the Top-k variants are close and prove the most optima.
 
-## Key Results
+## Key Results (paper)
 
-- At depth 6 and 300 seconds, CA-Discrepancy with monotonic relaxation reports
-  the best average primal gap integral, 7.4, versus 28.8 for DL8.5 and 8.5 for
-  Blossom.
-- At depth 7 and 300 seconds, CA-Discrepancy reports 14.0 versus 39.5 for DL8.5
-  and 17.2 for Blossom.
-- At depth 5 and 300 seconds, CA-Top-k and CA-Top-k* solve 15 of 25 instances,
-  compared with 11 for DL8.5 and 13 for Blossom.
+- **Depth 6, 300 s:** average primal integral 7.4 for CA-Discrepancy
+  (monotonic), against 28.8 for DL8.5, 8.5 for Blossom and 64.3 for C4.5.
+- **Depth 7, 300 s:** 14.0 for CA-Discrepancy, against 39.5 for DL8.5 and
+  17.2 for Blossom.
+- **Depth 5, 300 s:** CA-Top-k and CA-Top-k\* solve 15 of 25 instances to
+  proven optimality, against 11 for DL8.5 and 13 for Blossom.
+
+## This Gym
+
+Solvers reach hidden CP4IM subsamples only through an evaluator-owned
+count oracle that charges effort per count. Two experiments are scored:
+depth 4 and depth 5 with 40 features, under budgets far below exhaustive
+search. Each scores the primal gap integral and the final gap, with
+completeness as a hard constraint. Reference values on the held-out test
+(lower is better):
+
+| Experiment | CA-Discrepancy (reference) | DL8.5 |
+|---|---|---|
+| `anytime_depth4` | 0.139 | 0.311 |
+| `anytime_depth5` | 0.247 | 0.495 |
+
+See `scoring/reference.json` and `HARDENING.md`.
 
 ---
 
@@ -30,23 +47,38 @@ Top-k and Top-k* variants are also competitive and maintain completeness.
 
 ## Research Question
 
-How can a binary classification decision tree be learned under maximum-depth
-and minimum-support constraints while producing strong incumbent trees early,
-not only after an exact search finishes?
+Given a binary classification dataset over boolean features, a maximum tree
+depth and a minimum leaf support, find a decision tree with the minimum number
+of misclassified training examples. The problem is NP-hard. How can a solver
+return good trees early, improve them steadily, and still be able to certify the
+optimum when given enough effort?
 
 ## Why It Matters
 
-Optimal decision-tree learners can give smaller and more accurate interpretable
-models than greedy induction, but exact search may spend a long time in
-unpromising parts of the search space. A useful solver should therefore expose
-good anytime behavior while still being able to prove optimality.
+Optimal decision trees are smaller and more accurate than greedily induced ones
+and remain interpretable. Exact solvers guarantee optimality but are often
+interrupted before they finish, and then return whatever tree they currently
+hold. A solver whose current tree is good at every moment (good *anytime*
+behaviour) is far more useful in practice than one that is only good once it
+completes, provided it does not give up the ability to prove optimality.
+
+## Setting Used Here
+
+The data are the CP4IM binary benchmark datasets used by the original study.
+Each benchmark instance is a hidden random subsample of one dataset: a random
+60% of its rows (at most 1000) and 40 random features, with feature identities
+permuted and polarities randomly flipped. Trees have maximum depth 4 or 5 and
+minimum leaf support 1. A solver never sees the data. It obtains class counts
+from the evaluator, which charges one unit of effort per count, and the budget
+is far smaller than the number of counts that exhaustive search would need.
 
 ## Success Criteria
 
-A successful system returns feasible decision trees quickly, improves their
-training error as more time is allowed, and can eventually prove optimality for
-the constrained training problem. Evaluation must compare both incumbent quality
-over time and whether optimality is preserved.
+- The solver's current tree is close to the optimum throughout the effort
+  budget, not only at the end.
+- The final tree is close to the optimum.
+- The solver remains complete: when the budget exceeds the size of the whole
+  search space it certifies the optimal tree.
 
 ---
 
@@ -54,73 +86,136 @@ over time and whether optimality is preserved.
 
 ## Key Contribution
 
-The paper introduces CA-DL8.5, a complete anytime framework for exact binary
-decision-tree learning. It wraps DL8.5's cached branch-and-bound dynamic
-programming search in restart iterations that progressively relax a pruning
-rule, following complete anytime beam search.
+CA-DL8.5 is a complete anytime framework for exact decision-tree learning. It
+wraps DL8.5's cached branch-and-bound dynamic programming in Complete Anytime
+Beam Search: the search restarts repeatedly from the root under a pruning
+rule, and the rule is relaxed after each restart until nothing is pruned.
 
-## Approach
+## Approach (as implemented in `method/cadl85.py`)
 
-DL8.5 recursively solves subproblems defined by a branch, remaining features,
-maximum depth, and minimum support. For each candidate feature it solves the
-false and true child subproblems, combines their errors, updates an upper bound,
-and caches solved subproblems.
+- **BeamDL8.5 recursion.** At each branch, features are tried in decreasing
+  information-gain order. For each one, the zero child and then the one child
+  are solved under the current upper bound, and the best split is kept. A
+  branch at maximum depth or with zero error is terminal and exempt from
+  pruning. A branch whose rule state violates the rule is returned as a leaf
+  and marked as not fully explored.
+- **Rules** (paper Table 1). Each child's state comes from its parent's
+  state and the rank i of the split feature:
+  - Discrepancy: state += i, prune when state ≥ max_discr. This is LDS-DL8.5.
+  - Top-k: state = i, prune when i ≥ k.
+  - Top-k\*: Top-k with the width halved at each level.
+  - Gain: state += best gain − gain, prune when state > max_gap.
+  - Purity: state = 1 − error/size, prune when state ≥ min_purity.
+- **Relaxations.** Monotonic (+1), exponential (×2) and Luby. Every rule
+  starts at its greedy setting.
+- **Caching.** Fully explored branches are cached with the bound they were
+  solved under and reused across restarts. Counts are cached by the oracle
+  client, which plays the role of DL8.5's trie, so revisiting a branch is free.
+- **Anytime semantics.** These follow Algorithm 2's time-limit check: when
+  interrupted, every open branch returns its best tree so far and an
+  unexplored child returns a leaf. That interrupted tree is submitted
+  whenever it improves.
+- **Termination.** The search stops when the root is fully explored, which
+  proves the incumbent optimal, or when the budget runs out.
 
-CA-DL8.5 adds a state and rule to this recursion. Early restarts prune nodes
-that violate a strict rule; later restarts relax that rule and explore more of
-the search space. The paper defines purity, information-gain gap,
-discrepancy, Top-k, and Top-k* rules. Discrepancy accumulates feature-rank
-deviations along a path, while Top-k limits the locally allowed feature ranks.
+`method/run_solver.py --rule {discrepancy,topk,topk_star,gain,purity} --relax {monotonic,exponential,luby}`
+runs one instantiation as an oracle-protocol solver. The reference
+instantiation is `ca_discrepancy_monotonic`, the paper's headline variant.
 
 ## Main Claims
 
-The primary claim is that complete anytime search improves incumbent decision
-tree quality over standard DL8.5 under time limits while preserving the ability
-to reach/prove optimality. The empirical claim is that discrepancy-guided
-CA-DL8.5 and Top-k* variants have the best average primal gap integral on CP4IM
-benchmarks and solve at least as many instances as competing exact methods.
+- Complete anytime search improves the incumbent tree over time much faster
+  than plain DL8.5, and beats greedy and Top-k trees, while remaining
+  complete.
+- Discrepancy is the best rule overall, Top-k and Top-k\* are close behind,
+  and Gain and Purity lag (Tables 2 and 3).
+- The variants solve at least as many instances to proven optimality as DL8.5
+  (Figure 3).
 
 ---
 
 # Evaluation
 
-## Metrics
+## Protocol: solvers talk to an oracle
 
-The primary metric is the average primal gap integral over a fixed search-effort
-horizon. At each recorded effort step, the primal gap is the relative difference
-between the current incumbent tree error and the proven optimal tree error for
-the same constrained problem. Lower is better. The original study reports an
-analogous quantity over elapsed time; this gym scores over a method-reported
-effort coordinate so the metric is not hardware-dependent.
+A solver is a program, run once per instance as a subprocess with the
+workspace as working directory. It never reads the data. It talks to the
+evaluator over line-delimited JSON on stdin/stdout:
 
-The reproduction also reports average excess error rate, defined as incumbent
-training error minus optimal training error divided by the number of examples.
-Lower is better. Optimality proved rate reports the fraction of datasets where
-the run proves the optimal constrained tree within the horizon. Higher is
-better and acts as the completeness constraint.
+1. It receives a header
+   `{"type": "instance", "protocol": 1, "n_features": F, "max_depth": D, "min_support": 1, "budget": B}`.
+2. It asks for class counts with `{"op": "count", "itemsets": [[f, ...], ...]}`.
+   For each itemset (distinct feature ids, at most D of them) the reply gives
+   `[n0, n1]`, the numbers of class-0 and class-1 examples whose listed
+   features are all 1; the empty itemset counts every example. **Each itemset
+   in a request costs one unit of effort, repeats included.** A request that
+   would exceed the budget is refused without charge. Counts of any branch
+   (a conjunction of feature = 0 / feature = 1 tests) follow from itemset
+   counts by inclusion-exclusion.
+3. It submits trees with `{"op": "incumbent", "tree": T}`, where `T` is
+   `{"label": 0|1}` or `{"feature": f, "zero": T0, "one": T1}`. A tree must
+   respect the maximum depth, may not repeat a feature on a path, and every
+   leaf's counts must follow from counts already obtained. The evaluator
+   computes the tree's error from the data. It never reveals the error and
+   never uses a number the solver reports.
+4. It ends with `{"op": "done"}` and exits with status 0.
 
-## Baselines and Targets
+`data/tree_oracle.py` is a client library for this protocol: it fetches and
+caches counts, derives branch counts and submits trees. A malformed message,
+an invalid tree, a non-zero exit or a run over the wall-clock safety cap
+(1200 s per instance) fails the run.
 
-The paper compares simple greedy/static tree learners, exact tree learners, and
-anytime exact tree learners. Its headline tables average the primal gap integral
-over CP4IM datasets at depths 6 and 7 with 300-second budgets. The reusable gym
-focuses on the same scientific question at smaller scale: whether a constrained
-tree learner returns better incumbents across an effort horizon while preserving
-an optimality-certificate signal.
+## Registering a solver
 
-## Evaluation Protocol
+`scripts/evaluate_train.sh` and `scripts/evaluate_test.sh` take no arguments.
+They run every solver registered in `method/solvers.json` and
+`baseline/solvers.json`, with entries of the form
+`"name": {"command": ["python", "-m", "your.module", "--flag"]}`. A name
+registered twice, or an entry without a command list, is scored as failed.
 
-The full paper protocol uses 25 CP4IM binary transaction datasets with minimum
-support 1, maximum depths 6 and 7, and time budgets up to 300 seconds. This
-reproduction includes a scaled CPU benchmark using three public CP4IM datasets
-(`zoo-1`, `vote`, `tic-tac-toe`), maximum depth 4, minimum support 1, all rows, a
-16-feature cap, and a fixed 16-step effort horizon. All methods are
-evaluated from their output JSONL traces by `scripts/evaluate.sh`; evaluation
-does not import the reproduced method.
+## Metrics (per experiment, averaged over instances)
 
-Each result record must include an `events` trace with incumbent errors and
-monotonic effort-step indices. Static methods can provide a single effort-zero
-event.
+- **`avg_primal_gap_integral`** (primary, lower is better). The primal gap
+  of a tree with error x against the optimal error x* is |x − x*| / |x|; it
+  is 1 before the first tree. The primal gap integral is the integral of the
+  current tree's gap over effort from 0 to the budget, divided by the budget
+  (Berthold 2013). It is the original study's anytime metric, with
+  evaluator-counted effort in place of seconds. Effort counts only data
+  requests, so neither wall-clock time nor the solver's own computation is
+  measured.
+- **`avg_final_primal_gap`** (lower is better): the gap of the tree held
+  when the budget is exhausted.
+
+## Constraint: completeness
+
+Each slice also contains completeness-check instances: depth 3, 10 features,
+and a budget 64 times the number of itemsets of size at most 3. A solver must
+end each of them with a tree whose optimality is certified by the counts it
+obtained. The evaluator checks this with a branch-and-bound lower bound in
+which a branch with unknown counts has error at least 0. A solver that misses
+any certificate, or fails any run, gets the worst value (1.0) in every metric
+of every experiment. The scores file also lists, without ranking them, the
+metric values of solvers that failed only this constraint.
+
+## Experiments
+
+| Experiment | Depth | Features | Budget (counts) | Itemset lattice | Test instances |
+|---|---|---|---|---|---|
+| `anytime_depth4` | 4 | 40 | 20,000 | 102,091 | 24 |
+| `anytime_depth5` | 5 | 40 | 60,000 | 760,099 | 18 |
+
+Each slice includes only instances whose lattice is at least twice the budget,
+whose information-gain greedy tree is not already optimal, and whose optimal
+error is at least 10. Exact optima come from an independent exact dynamic
+program run when the instances are built. Train instances come from 10 CP4IM
+datasets and held-out test instances from 14 others, with the same settings.
+Scoring is deterministic: rerunning the same solver gives identical scores.
+
+## Baselines
+
+C4.5-style greedy induction, Top-3 / Top-5 restricted exact search (both
+incomplete), and plain depth-first exact branch-and-bound (DL8.5). The two
+incomplete families fail the completeness constraint by design.
 
 ---
 
@@ -686,6 +781,85 @@ event.
 - Verified `scripts/download.sh` dataset URLs return HTTP 200.
 - Wrote the final `VERIFICATION.md` judgment and kept the workspace at
   `core_claim`.
+
+</details>
+
+### Iteration 11: claude-opus-5-5 (hardener)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 49m | **GPU**: 0.0h
+- **Jobs**: 9 total (7 completed, 1 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-06-02 02:58] - method_runs
+- Implemented a pure-Python DL8.5-style branch-and-bound dynamic-programming
+  solver for binary transaction decision-tree subproblems.
+- Implemented CA-DL8.5 restart search with discrepancy, gain, Top-k, and Top-k*
+  rule relaxation.
+- Added CP4IM data loading, baselines, JSONL traces, and method-agnostic
+  evaluation.
+
+### [2026-06-02 02:58] - core_claim
+- Ran the scaled CP4IM depth-4 benchmark successfully in the compute container.
+- Verified that complete anytime variants improve average primal gap integral
+  over greedy/static baselines while retaining an optimality-proof metric.
+- `python validate.py --compare` passes for the packaged environment.
+
+### [2026-06-02 03:02] - method_runs
+- Audited the implementation against the paper's BeamDL8.5 details and found
+  that the previous optimality certification was too permissive.
+- Patched BeamDL8.5 upper-bound propagation, child-state pruning, Top-k* level
+  scheduling, and evaluator optimality-credit checks.
+- Downgraded the active milestone pending a fresh compute-node rerun of the
+  corrected code.
+
+### [2026-06-02 03:04] - method_runs
+- Fixed exact DL8.5 cache keys to include the active upper bound, preventing
+  bounded partial searches from being reused as globally exact results.
+- Changed evaluation to require a `dl85_exact` proved optimum for every scored
+  dataset/depth/feature-cap instance.
+- Verified on `tic-tac-toe` that restrictive CA-DL8.5 passes no longer report
+  false optimality at the old greedy error.
+
+### [2026-06-02 03:08] - core_claim
+- Reran the corrected scaled CP4IM benchmark in compute job `d59e1525-496`.
+- `python validate.py --compare` passed in the container after regenerating
+  `scoring/scores.json`.
+- Corrected CA-DL8.5 variants improve average primal gap integral over static
+  greedy/Top-k baselines while optimality proof credit is now restricted to
+  cases certified against exact DL8.5.
+
+### [2026-06-02 03:29] - core_claim
+- Final verification replaced wall-clock-based scoring with deterministic
+  restart/iteration-effort scoring and regenerated main, train, and test scores.
+- Verified dataset download URLs, method/evaluation separation, train/test
+  method-key matching, shell syntax, and `python validate.py --compare`.
+- Wrote `VERIFICATION.md`; the workspace remains at `core_claim`.
+
+### [2026-06-02 03:33] - core_claim
+- Added a fixed 16-restart cap to the CA-DL8.5 runner so method generation and
+  evaluation use the same deterministic effort horizon.
+- Updated `scripts/run.sh` to regenerate baseline and method JSONL traces before
+  train/test evaluation and validation.
+- Submitting a CPU test job to verify the packaged workflow after this change.
+
+### [2026-06-02 03:38] - core_claim
+- Final verification confirmed `python validate.py --compare` passes, strict
+  method-agnostic files are clean, and packaged shell scripts parse.
+- Verified `scripts/download.sh` dataset URLs return HTTP 200.
+- Wrote the final `VERIFICATION.md` judgment and kept the workspace at
+  `core_claim`.
+
+### [2026-11-11] - core_claim (iteration 11, hardening)
+- Replaced the trace-based evaluator with an oracle harness: solvers get class
+  counts only from the evaluator, effort is counted by the evaluator, trees and
+  proofs are verified against hidden data, and exact optima are computed
+  independently.
+- On the hidden test (42 instances, depth 4/5), CA-Discrepancy beats DL8.5,
+  Gain, Purity, brute-force enumeration and the no-cache ablation on every
+  instance, matching the paper's direction. A better variant beats the
+  reference on 41 of 42 instances. All shortcut probes score worst values.
 
 </details>
 
