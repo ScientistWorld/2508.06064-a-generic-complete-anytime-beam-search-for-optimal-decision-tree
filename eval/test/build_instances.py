@@ -7,8 +7,10 @@ error at the instance's maximum depth is computed here by an independent exact
 dynamic program (bounded branch-and-bound over row bitsets, exact depth-2 base
 case), so the optimum never comes from a solver under evaluation.
 
-Instances where the information-gain greedy tree is already optimal, or whose
-optimal error is below MIN_OPTIMAL_ERROR, are skipped: on the former every
+Instances whose itemset lattice is smaller than MIN_LATTICE_FACTOR x budget
+(exhaustive enumeration would fit in the budget), whose information-gain greedy
+tree is already optimal, or whose optimal error is below MIN_OPTIMAL_ERROR are
+skipped: on the former every
 reasonable solver is optimal immediately (the paper likewise excludes trivially
 solved datasets), on the latter relative gaps move in large integer jumps.
 
@@ -36,8 +38,8 @@ DATASETS = [
 ]
 # name: (max_depth, n_features, budget in itemset-count queries, instances per dataset)
 EXPERIMENTS = {
-    "anytime_depth4": (4, 40, 20000, 2),
-    "anytime_depth5": (5, 40, 60000, 2),
+    "anytime_depth4": (4, 40, 20000, 3),
+    "anytime_depth5": (5, 40, 60000, 4),
 }
 # Small instances with a budget far above the size of their itemset lattice:
 # any complete solver must prove optimality on every one of them.
@@ -46,7 +48,10 @@ COMPLETENESS = {"max_depth": 3, "n_features": 10, "budget_factor": 64,
 ROW_FRACTION = 0.6
 MAX_ROWS = 1000
 MIN_OPTIMAL_ERROR = 10   # relative gaps of tiny optima move in large integer jumps
-MAX_ATTEMPTS = 6
+# The budget must stay far below the size of the itemset lattice, otherwise
+# exhaustive enumeration of every candidate fits in it.
+MIN_LATTICE_FACTOR = 2
+MAX_ATTEMPTS = 8
 SEED = "cadl85-gym/test/v1"
 
 
@@ -233,7 +238,7 @@ def greedy_error(cols: list[int], pos: int, n_rows: int, depth: int) -> int:
     return rec(all_rows, depth)
 
 
-def make_instance(name, rows, labels, depth, n_feat, budget, rng):
+def make_instance(name, rows, labels, depth, n_feat, budget, rng, min_lattice=0, min_opt=0):
     n = len(labels)
     n_keep = min(MAX_ROWS, int(round(ROW_FRACTION * n)))
     keep = rng.sample(range(n), n_keep)  # random subset, random order
@@ -269,10 +274,14 @@ def make_instance(name, rows, labels, depth, n_feat, budget, rng):
         "columns": [format(c, "x") for c in cols],
         "labels": format(pos, "x"),
     }
+    leaf = min(sum(lab), n_keep - sum(lab))
+    if lattice_size(len(cols), depth) < min_lattice:
+        return spec, {"skip": f"itemset lattice {lattice_size(len(cols), depth)} < {min_lattice}"}
+    greedy = greedy_error(cols, pos, n_keep, depth)
+    if greedy < min_opt:  # the optimum is at most the greedy error
+        return spec, {"skip": f"greedy error {greedy} < {min_opt}"}
     t0 = time.time()
     opt = ExactSolver(cols, pos, n_keep).solve(full, depth)
-    greedy = greedy_error(cols, pos, n_keep, depth)
-    leaf = min(sum(lab), n_keep - sum(lab))
     return spec, {"optimal_error": opt, "greedy_error": greedy, "leaf_error": leaf,
                   "exact_seconds": round(time.time() - t0, 2)}
 
@@ -298,9 +307,10 @@ def build(raw_dir: Path, datasets, experiments, completeness, seed, log=print):
             rng = random.Random(f"{seed}/{exp}/{ds}/{attempt}")
             name = f"{exp}/{ds}/{made}"
             b = budget if budget is not None else 0
-            spec, ans = make_instance(name, rows, labels, depth, n_feat, b, rng)
             min_opt = 1 if exp == "completeness" else MIN_OPTIMAL_ERROR
-            if ans["greedy_error"] <= ans["optimal_error"] or ans["optimal_error"] < min_opt:
+            min_lattice = 0 if exp == "completeness" else MIN_LATTICE_FACTOR * b
+            spec, ans = make_instance(name, rows, labels, depth, n_feat, b, rng, min_lattice, min_opt)
+            if "skip" in ans or ans["greedy_error"] <= ans["optimal_error"] or ans["optimal_error"] < min_opt:
                 log(f"skip {name} attempt {attempt}: {ans}")
                 continue
             if exp == "completeness":

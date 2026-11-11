@@ -1,97 +1,285 @@
 {
   "experiments": {
-    "depth6_paper_anytime": {
-      "description": "Paper Table 2: average primal gap integral on 25 CP4IM datasets at max depth 6 and 300 seconds.",
-      "weight": 0.35,
+    "anytime_depth4": {
+      "description": "Anytime optimal-tree search at maximum depth 4 on hidden subsamples of CP4IM datasets (40 random features, 60% of rows, min support 1) with a budget of 20,000 itemset-count queries (about 20% of the itemset lattice).",
+      "notes": "Scaled gym experiment, not reported in the paper. Results are the gym's reference runs on the hidden test slice (deterministic: reruns are bit-identical). Solvers that fail the completeness constraint (no optimality proof on the completeness-check instances, whose budgets exceed their whole search space) or fail any run are scored with the worst value 1.0; the incomplete greedy / Top-k baselines therefore show 1.0 here (their unconstrained values are reported unranked in scores_test.json). The paper's own numbers (25 full CP4IM datasets, depths 5-7, 300 s, C++) are not on this scale and are kept under _paper_reported.",
+      "weight": 0.4,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
         "avg_primal_gap_integral": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Lower anytime primal gap integral rewards finding near-optimal feasible trees earlier in the search horizon."
-        }
-      },
-      "results": {
-        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 64.3},
-        "top3": {"type": "baseline", "avg_primal_gap_integral": 44.0},
-        "top5": {"type": "baseline", "avg_primal_gap_integral": 33.5},
-        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 28.8},
-        "blossom": {"type": "baseline", "avg_primal_gap_integral": 8.5},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.4},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 7.7}
-      }
-    },
-    "depth7_paper_anytime": {
-      "description": "Paper Table 3: average primal gap integral on 25 CP4IM datasets at max depth 7 and 300 seconds.",
-      "weight": 0.25,
-      "primary_metric": "avg_primal_gap_integral",
-      "metrics": {
-        "avg_primal_gap_integral": {
-          "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Lower anytime primal gap integral rewards finding near-optimal feasible trees earlier in the search horizon."
-        }
-      },
-      "results": {
-        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 69.3},
-        "top3": {"type": "baseline", "avg_primal_gap_integral": 50.6},
-        "top5": {"type": "baseline", "avg_primal_gap_integral": 36.5},
-        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 39.5},
-        "blossom": {"type": "baseline", "avg_primal_gap_integral": 17.2},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 14.0},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 22.6}
-      }
-    },
-    "depth5_paper_optimality": {
-      "description": "Paper Figure 3: number of CP4IM instances solved to proven optimality within 300 seconds at max depth 5.",
-      "weight": 0.20,
-      "primary_metric": "optimality_proved_count",
-      "metrics": {
-        "optimality_proved_count": {
-          "higher_is_better": true,
           "coefficient": 1.0,
-          "description": "Counts instances where the solver certifies the globally optimal constrained decision tree within the time limit."
+          "description": "Primal integral (Berthold 2013) of the incumbent's primal gap |x - x*| / |x| over the evaluator-counted query budget, divided by the budget and averaged over instances; the gap is 1 before the first tree. The paper's anytime metric (Tables 2 and 3), with query effort in place of seconds."
+        },
+        "avg_final_primal_gap": {
+          "higher_is_better": false,
+          "coefficient": 0.5,
+          "description": "Primal gap of the incumbent when the budget is exhausted, averaged over instances: how close the solver ends to the optimal constrained tree."
         }
       },
       "results": {
-        "dl85_exact": {"type": "baseline", "optimality_proved_count": 11},
-        "blossom": {"type": "baseline", "optimality_proved_count": 13},
-        "ca_purity": {"type": "proposed", "optimality_proved_count": 12},
-        "ca_gain": {"type": "proposed", "optimality_proved_count": 13},
-        "ca_discrepancy": {"type": "proposed", "optimality_proved_count": 14},
-        "ca_topk": {"type": "proposed", "optimality_proved_count": 15},
-        "ca_topk_star": {"type": "proposed", "optimality_proved_count": 15}
+        "c45_greedy": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.120597,
+          "avg_final_primal_gap": 0.07371
+        },
+        "ca_gain_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.191975,
+          "avg_final_primal_gap": 0.113795
+        },
+        "ca_purity": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.337406,
+          "avg_final_primal_gap": 0.299968
+        },
+        "ca_topk_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.128724,
+          "avg_final_primal_gap": 0.078767
+        },
+        "ca_topk_star_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.130933,
+          "avg_final_primal_gap": 0.090219
+        },
+        "dl85": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 0.240473,
+          "avg_final_primal_gap": 0.113795
+        },
+        "top3": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        }
       }
     },
-    "depth4_cp4im_anytime": {
-      "description": "Scaled gym target: average primal gap integral over deterministic restart/iteration effort, excess error, and optimality proof rate on three CP4IM datasets at max depth 4 with 16 selected features.",
-      "notes": "This experiment is not reported in the paper. It is the gym's scaled CPU benchmark using the paper's constrained decision-tree task. Values are stored here as validator anchors for the reusable benchmark; the paper-reported reference results are the depth-5, depth-6, and depth-7 entries above.",
-      "weight": 0.20,
+    "anytime_depth5": {
+      "description": "Anytime optimal-tree search at maximum depth 5 on hidden subsamples of CP4IM datasets (40 random features, 60% of rows, min support 1) with a budget of 60,000 itemset-count queries (under 8% of the itemset lattice). Closest to the paper's depth-6/7 anytime regime.",
+      "notes": "Scaled gym experiment, not reported in the paper. Results are the gym's reference runs on the hidden test slice (deterministic: reruns are bit-identical). Solvers that fail the completeness constraint (no optimality proof on the completeness-check instances, whose budgets exceed their whole search space) or fail any run are scored with the worst value 1.0; the incomplete greedy / Top-k baselines therefore show 1.0 here (their unconstrained values are reported unranked in scores_test.json). The paper's own numbers (25 full CP4IM datasets, depths 5-7, 300 s, C++) are not on this scale and are kept under _paper_reported.",
+      "weight": 0.6,
       "primary_metric": "avg_primal_gap_integral",
       "metrics": {
         "avg_primal_gap_integral": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Lower anytime primal gap integral rewards maintaining a better incumbent relative to the proven optimum over a fixed deterministic restart/iteration effort window."
+          "coefficient": 1.0,
+          "description": "Primal integral (Berthold 2013) of the incumbent's primal gap |x - x*| / |x| over the evaluator-counted query budget, divided by the budget and averaged over instances; the gap is 1 before the first tree. The paper's anytime metric (Tables 2 and 3), with query effort in place of seconds."
         },
-        "avg_excess_error_rate": {
+        "avg_final_primal_gap": {
           "higher_is_better": false,
-          "coefficient": -0.7,
-          "description": "Lower final excess training-error rate rewards ending the scoring window closer to the optimal constrained tree."
-        },
-        "optimality_proved_rate": {
-          "higher_is_better": true,
-          "coefficient": 0.4,
-          "description": "Higher proof rate rewards methods that certify optimality rather than only returning heuristic incumbents."
+          "coefficient": 0.5,
+          "description": "Primal gap of the incumbent when the budget is exhausted, averaged over instances: how close the solver ends to the optimal constrained tree."
         }
       },
       "results": {
-        "c45_greedy": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},
-        "top3": {"type": "baseline", "avg_primal_gap_integral": 0.0681, "avg_excess_error_rate": 0.00606, "optimality_proved_rate": 0.0},
-        "dl85_exact": {"type": "baseline", "avg_primal_gap_integral": 0.0, "avg_excess_error_rate": 0.0, "optimality_proved_rate": 1.0},
-        "ca_discrepancy_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0562, "avg_excess_error_rate": 0.00425, "optimality_proved_rate": 0.3333},
-        "ca_topk_star_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0597, "avg_excess_error_rate": 0.00425, "optimality_proved_rate": 0.3333},
-        "ca_gain_monotonic": {"type": "proposed", "avg_primal_gap_integral": 0.0390, "avg_excess_error_rate": 0.00285, "optimality_proved_rate": 0.3333}
+        "c45_greedy": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.202387,
+          "avg_final_primal_gap": 0.13577
+        },
+        "ca_gain_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.303915,
+          "avg_final_primal_gap": 0.248165
+        },
+        "ca_purity": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.447297,
+          "avg_final_primal_gap": 0.406348
+        },
+        "ca_topk_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.208493,
+          "avg_final_primal_gap": 0.15188
+        },
+        "ca_topk_star_monotonic": {
+          "type": "proposed",
+          "avg_primal_gap_integral": 0.222974,
+          "avg_final_primal_gap": 0.172866
+        },
+        "dl85": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 0.421992,
+          "avg_final_primal_gap": 0.310722
+        },
+        "top3": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "type": "baseline",
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        }
+      }
+    }
+  },
+  "constraints": {
+    "completeness": "A solver must prove optimality on every completeness-check instance (depth 3, 10 features, budget 64x the itemset lattice). Failing it, or failing any run, scores the solver with the worst value in every metric of every experiment."
+  },
+  "_paper_reported": {
+    "note": "Numbers reported in the paper (unchanged). 25 CP4IM datasets, minimum support 1, C++ implementations, wall-clock budgets; average primal integral in the paper's units. Not on the gym's scale.",
+    "depth6_anytime_table2_300s": {
+      "c45_greedy": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 64.3
+      },
+      "top3": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 44.0
+      },
+      "top5": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 33.5
+      },
+      "dl85_exact": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 28.8
+      },
+      "blossom": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 8.5
+      },
+      "ca_discrepancy_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 7.4
+      },
+      "ca_topk_star_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 7.7
+      }
+    },
+    "depth7_anytime_table3_300s": {
+      "c45_greedy": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 69.3
+      },
+      "top3": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 50.6
+      },
+      "top5": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 36.5
+      },
+      "dl85_exact": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 39.5
+      },
+      "blossom": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 17.2
+      },
+      "ca_discrepancy_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 14.0
+      },
+      "ca_topk_star_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 22.6
+      }
+    },
+    "depth5_optimality_figure3_solved_of_25": {
+      "dl85_exact": {
+        "type": "baseline",
+        "optimality_proved_count": 11
+      },
+      "blossom": {
+        "type": "baseline",
+        "optimality_proved_count": 13
+      },
+      "ca_purity": {
+        "type": "proposed",
+        "optimality_proved_count": 12
+      },
+      "ca_gain": {
+        "type": "proposed",
+        "optimality_proved_count": 13
+      },
+      "ca_discrepancy": {
+        "type": "proposed",
+        "optimality_proved_count": 14
+      },
+      "ca_topk": {
+        "type": "proposed",
+        "optimality_proved_count": 15
+      },
+      "ca_topk_star": {
+        "type": "proposed",
+        "optimality_proved_count": 15
+      }
+    },
+    "extra_300s_rows": {
+      "depth6": {
+        "ca_purity": 26.7,
+        "ca_gain_monotonic": 21.5,
+        "ca_gain_luby": 21.2,
+        "ca_discrepancy_luby": 7.8,
+        "ca_topk_monotonic": 11.3,
+        "ca_topk_star_luby": 7.7
+      },
+      "depth7": {
+        "ca_purity": 39.7,
+        "ca_gain_monotonic": 38.5,
+        "ca_gain_exponential": 32.5,
+        "ca_discrepancy_luby": 14.0,
+        "ca_topk_monotonic": 16.6,
+        "ca_topk_star_luby": 22.3
+      }
+    },
+    "previous_scaled_gym_depth4_cp4im_anytime": {
+      "c45_greedy": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 0.0681,
+        "avg_excess_error_rate": 0.00606,
+        "optimality_proved_rate": 0.0
+      },
+      "top3": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 0.0681,
+        "avg_excess_error_rate": 0.00606,
+        "optimality_proved_rate": 0.0
+      },
+      "dl85_exact": {
+        "type": "baseline",
+        "avg_primal_gap_integral": 0.0,
+        "avg_excess_error_rate": 0.0,
+        "optimality_proved_rate": 1.0
+      },
+      "ca_discrepancy_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 0.0562,
+        "avg_excess_error_rate": 0.00425,
+        "optimality_proved_rate": 0.3333
+      },
+      "ca_topk_star_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 0.0597,
+        "avg_excess_error_rate": 0.00425,
+        "optimality_proved_rate": 0.3333
+      },
+      "ca_gain_monotonic": {
+        "type": "proposed",
+        "avg_primal_gap_integral": 0.039,
+        "avg_excess_error_rate": 0.00285,
+        "optimality_proved_rate": 0.3333
       }
     }
   }
