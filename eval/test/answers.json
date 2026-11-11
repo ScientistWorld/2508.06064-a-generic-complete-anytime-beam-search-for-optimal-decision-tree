@@ -1,227 +1,297 @@
 {
  "anytime_depth4/audiology/0": {
-  "exact_seconds": 1.09,
+  "exact_seconds": 3.29,
   "greedy_error": 23,
   "lattice_size": 102091,
   "leaf_error": 29,
   "optimal_error": 13
  },
  "anytime_depth4/audiology/1": {
-  "exact_seconds": 1.0,
+  "exact_seconds": 3.39,
   "greedy_error": 17,
   "lattice_size": 102091,
   "leaf_error": 30,
   "optimal_error": 14
  },
+ "anytime_depth4/audiology/2": {
+  "exact_seconds": 2.54,
+  "greedy_error": 25,
+  "lattice_size": 102091,
+  "leaf_error": 36,
+  "optimal_error": 12
+ },
  "anytime_depth4/diabetes/0": {
-  "exact_seconds": 2.69,
+  "exact_seconds": 7.26,
   "greedy_error": 109,
   "lattice_size": 102091,
   "leaf_error": 156,
   "optimal_error": 83
  },
  "anytime_depth4/diabetes/1": {
-  "exact_seconds": 2.09,
+  "exact_seconds": 7.06,
   "greedy_error": 94,
   "lattice_size": 102091,
   "leaf_error": 162,
   "optimal_error": 77
  },
+ "anytime_depth4/diabetes/2": {
+  "exact_seconds": 3.44,
+  "greedy_error": 90,
+  "lattice_size": 102091,
+  "leaf_error": 157,
+  "optimal_error": 71
+ },
  "anytime_depth4/german-credit/0": {
-  "exact_seconds": 1.44,
+  "exact_seconds": 6.05,
   "greedy_error": 173,
   "lattice_size": 102091,
   "leaf_error": 191,
   "optimal_error": 139
  },
  "anytime_depth4/german-credit/1": {
-  "exact_seconds": 1.68,
+  "exact_seconds": 9.45,
   "greedy_error": 136,
   "lattice_size": 102091,
   "leaf_error": 178,
   "optimal_error": 118
  },
+ "anytime_depth4/german-credit/2": {
+  "exact_seconds": 1.81,
+  "greedy_error": 142,
+  "lattice_size": 102091,
+  "leaf_error": 192,
+  "optimal_error": 127
+ },
  "anytime_depth4/ionosphere/0": {
-  "exact_seconds": 1.69,
+  "exact_seconds": 5.75,
   "greedy_error": 18,
   "lattice_size": 102091,
   "leaf_error": 73,
   "optimal_error": 10
  },
  "anytime_depth4/ionosphere/1": {
-  "exact_seconds": 1.4,
+  "exact_seconds": 1.98,
   "greedy_error": 29,
   "lattice_size": 102091,
   "leaf_error": 79,
   "optimal_error": 12
  },
+ "anytime_depth4/ionosphere/2": {
+  "exact_seconds": 1.24,
+  "greedy_error": 24,
+  "lattice_size": 102091,
+  "leaf_error": 77,
+  "optimal_error": 11
+ },
  "anytime_depth4/letter/0": {
-  "exact_seconds": 2.92,
+  "exact_seconds": 1.42,
   "greedy_error": 39,
   "lattice_size": 102091,
   "leaf_error": 39,
   "optimal_error": 24
  },
  "anytime_depth4/letter/1": {
-  "exact_seconds": 2.95,
+  "exact_seconds": 1.26,
   "greedy_error": 32,
   "lattice_size": 102091,
   "leaf_error": 32,
   "optimal_error": 16
  },
+ "anytime_depth4/letter/2": {
+  "exact_seconds": 1.31,
+  "greedy_error": 16,
+  "lattice_size": 102091,
+  "leaf_error": 37,
+  "optimal_error": 13
+ },
  "anytime_depth4/mushroom/0": {
-  "exact_seconds": 0.78,
+  "exact_seconds": 0.69,
   "greedy_error": 65,
   "lattice_size": 102091,
   "leaf_error": 477,
   "optimal_error": 26
  },
  "anytime_depth4/mushroom/1": {
-  "exact_seconds": 0.78,
+  "exact_seconds": 0.79,
   "greedy_error": 73,
   "lattice_size": 102091,
   "leaf_error": 486,
   "optimal_error": 32
  },
- "anytime_depth4/primary-tumor/0": {
-  "exact_seconds": 0.05,
-  "greedy_error": 28,
-  "lattice_size": 3214,
-  "leaf_error": 55,
-  "optimal_error": 21
- },
- "anytime_depth4/primary-tumor/1": {
-  "exact_seconds": 0.04,
-  "greedy_error": 26,
-  "lattice_size": 3214,
-  "leaf_error": 45,
-  "optimal_error": 18
+ "anytime_depth4/mushroom/2": {
+  "exact_seconds": 0.68,
+  "greedy_error": 89,
+  "lattice_size": 102091,
+  "leaf_error": 469,
+  "optimal_error": 17
  },
  "anytime_depth4/splice-1/0": {
-  "exact_seconds": 2.2,
+  "exact_seconds": 2.45,
   "greedy_error": 190,
   "lattice_size": 102091,
   "leaf_error": 491,
   "optimal_error": 170
  },
  "anytime_depth4/splice-1/1": {
-  "exact_seconds": 2.23,
+  "exact_seconds": 2.59,
   "greedy_error": 318,
   "lattice_size": 102091,
   "leaf_error": 480,
   "optimal_error": 295
  },
- "anytime_depth4/tic-tac-toe/0": {
-  "exact_seconds": 0.31,
-  "greedy_error": 102,
-  "lattice_size": 20854,
-  "leaf_error": 176,
-  "optimal_error": 70
- },
- "anytime_depth4/tic-tac-toe/1": {
-  "exact_seconds": 0.32,
-  "greedy_error": 97,
-  "lattice_size": 20854,
-  "leaf_error": 203,
-  "optimal_error": 69
+ "anytime_depth4/splice-1/2": {
+  "exact_seconds": 2.52,
+  "greedy_error": 242,
+  "lattice_size": 102091,
+  "leaf_error": 480,
+  "optimal_error": 211
  },
  "anytime_depth4/vehicle/0": {
-  "exact_seconds": 1.05,
+  "exact_seconds": 1.1,
   "greedy_error": 83,
   "lattice_size": 102091,
   "leaf_error": 121,
   "optimal_error": 43
  },
  "anytime_depth4/vehicle/1": {
-  "exact_seconds": 1.18,
+  "exact_seconds": 1.21,
   "greedy_error": 30,
   "lattice_size": 102091,
   "leaf_error": 134,
   "optimal_error": 19
  },
+ "anytime_depth4/vehicle/2": {
+  "exact_seconds": 1.19,
+  "greedy_error": 43,
+  "lattice_size": 102091,
+  "leaf_error": 135,
+  "optimal_error": 24
+ },
  "anytime_depth5/diabetes/0": {
-  "exact_seconds": 20.48,
+  "exact_seconds": 34.25,
   "greedy_error": 87,
   "lattice_size": 760099,
   "leaf_error": 160,
   "optimal_error": 48
  },
  "anytime_depth5/diabetes/1": {
-  "exact_seconds": 20.62,
+  "exact_seconds": 38.82,
   "greedy_error": 90,
   "lattice_size": 760099,
   "leaf_error": 163,
   "optimal_error": 55
  },
+ "anytime_depth5/diabetes/2": {
+  "exact_seconds": 27.49,
+  "greedy_error": 91,
+  "lattice_size": 760099,
+  "leaf_error": 170,
+  "optimal_error": 56
+ },
+ "anytime_depth5/diabetes/3": {
+  "exact_seconds": 20.37,
+  "greedy_error": 81,
+  "lattice_size": 760099,
+  "leaf_error": 169,
+  "optimal_error": 48
+ },
  "anytime_depth5/german-credit/0": {
-  "exact_seconds": 20.91,
+  "exact_seconds": 22.31,
   "greedy_error": 129,
   "lattice_size": 760099,
   "leaf_error": 185,
   "optimal_error": 84
  },
  "anytime_depth5/german-credit/1": {
-  "exact_seconds": 21.84,
+  "exact_seconds": 33.28,
   "greedy_error": 137,
   "lattice_size": 760099,
   "leaf_error": 184,
   "optimal_error": 91
  },
- "anytime_depth5/primary-tumor/0": {
-  "exact_seconds": 0.18,
-  "greedy_error": 20,
-  "lattice_size": 9402,
-  "leaf_error": 43,
-  "optimal_error": 10
+ "anytime_depth5/german-credit/2": {
+  "exact_seconds": 21.46,
+  "greedy_error": 148,
+  "lattice_size": 760099,
+  "leaf_error": 186,
+  "optimal_error": 95
  },
- "anytime_depth5/primary-tumor/1": {
-  "exact_seconds": 0.19,
-  "greedy_error": 18,
-  "lattice_size": 9402,
+ "anytime_depth5/german-credit/3": {
+  "exact_seconds": 18.55,
+  "greedy_error": 120,
+  "lattice_size": 760099,
+  "leaf_error": 174,
+  "optimal_error": 91
+ },
+ "anytime_depth5/letter/0": {
+  "exact_seconds": 17.54,
+  "greedy_error": 26,
+  "lattice_size": 760099,
   "leaf_error": 51,
   "optimal_error": 10
  },
+ "anytime_depth5/mushroom/0": {
+  "exact_seconds": 8.72,
+  "greedy_error": 61,
+  "lattice_size": 760099,
+  "leaf_error": 495,
+  "optimal_error": 32
+ },
  "anytime_depth5/splice-1/0": {
-  "exact_seconds": 104.21,
+  "exact_seconds": 57.23,
   "greedy_error": 282,
   "lattice_size": 760099,
   "leaf_error": 487,
   "optimal_error": 243
  },
  "anytime_depth5/splice-1/1": {
-  "exact_seconds": 44.81,
+  "exact_seconds": 81.58,
   "greedy_error": 326,
   "lattice_size": 760099,
   "leaf_error": 479,
   "optimal_error": 254
  },
- "anytime_depth5/tic-tac-toe/0": {
-  "exact_seconds": 3.3,
-  "greedy_error": 53,
-  "lattice_size": 101584,
-  "leaf_error": 212,
-  "optimal_error": 26
+ "anytime_depth5/splice-1/2": {
+  "exact_seconds": 61.67,
+  "greedy_error": 206,
+  "lattice_size": 760099,
+  "leaf_error": 454,
+  "optimal_error": 168
  },
- "anytime_depth5/tic-tac-toe/1": {
-  "exact_seconds": 3.31,
-  "greedy_error": 42,
-  "lattice_size": 101584,
-  "leaf_error": 209,
-  "optimal_error": 27
+ "anytime_depth5/splice-1/3": {
+  "exact_seconds": 65.31,
+  "greedy_error": 197,
+  "lattice_size": 760099,
+  "leaf_error": 457,
+  "optimal_error": 154
  },
  "anytime_depth5/vehicle/0": {
-  "exact_seconds": 14.18,
+  "exact_seconds": 12.33,
   "greedy_error": 37,
   "lattice_size": 760099,
   "leaf_error": 134,
   "optimal_error": 13
  },
  "anytime_depth5/vehicle/1": {
-  "exact_seconds": 12.18,
+  "exact_seconds": 13.18,
   "greedy_error": 30,
   "lattice_size": 760099,
   "leaf_error": 128,
   "optimal_error": 10
+ },
+ "anytime_depth5/vehicle/2": {
+  "exact_seconds": 19.23,
+  "greedy_error": 40,
+  "lattice_size": 760099,
+  "leaf_error": 123,
+  "optimal_error": 24
+ },
+ "anytime_depth5/vehicle/3": {
+  "exact_seconds": 14.5,
+  "greedy_error": 42,
+  "lattice_size": 760099,
+  "leaf_error": 132,
+  "optimal_error": 11
  },
  "completeness/german-credit/0": {
   "exact_seconds": 0.0,
