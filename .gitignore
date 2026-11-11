@@ -231,3 +231,8 @@ tmp/
 protocol.md
 *.egg-info
 core.[0-9]*
+
+# Python caches and scratch space
+__pycache__/
+*.pyc
+tmp/

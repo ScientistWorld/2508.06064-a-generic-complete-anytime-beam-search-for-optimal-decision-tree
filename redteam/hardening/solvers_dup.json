@@ -1,0 +1,2 @@
+{"solvers": {"shortcut_duplicate": {"command": ["python", "-m", "method.run_solver", "--rule", "gain"]},
+             "shortcut_malformed": {"command": "python -m method.run_solver"}}}

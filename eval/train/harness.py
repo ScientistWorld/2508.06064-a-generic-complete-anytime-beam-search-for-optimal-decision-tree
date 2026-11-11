@@ -2,6 +2,8 @@
 
 The evaluator owns every instance. A solver never sees the data: it runs as a
 subprocess and talks to this harness over line-delimited JSON on stdin/stdout.
+Search effort is the number of itemset class-count queries the harness has
+answered, so it is counted here, not reported by the solver.
 
 Protocol (one JSON object per line)
 -----------------------------------
@@ -15,26 +17,27 @@ solver -> harness requests, each answered with one line:
 * ``{"op": "count", "itemsets": [[f, ...], ...]}``
   For every itemset (a set of distinct feature ids, size <= D) the harness
   returns ``[n0, n1]``: the number of examples of class 0 / class 1 whose
-  features in the itemset are all 1. Every itemset in the batch costs one unit
-  of effort, repeats included. Reply:
-  ``{"ok": true, "counts": [[n0, n1], ...], "used": u}``.
+  features in the itemset are all 1 (the empty itemset counts every example).
+  Every itemset in the batch costs one unit of effort, repeats included.
+  Reply: ``{"ok": true, "counts": [[n0, n1], ...], "used": u}``.
   A batch that would exceed the budget is refused without charge:
   ``{"ok": false, "error": "budget_exhausted", "used": u}``.
 * ``{"op": "incumbent", "tree": T}`` submits a decision tree. ``T`` is either a
   leaf ``{"label": 0|1}`` or a node ``{"feature": f, "zero": T0, "one": T1}``
   (``zero`` = examples with feature f = 0). Depth <= D, no feature repeated on
-  a path, and every leaf's example counts must already follow from answered
-  itemset queries (inclusion-exclusion). The harness scores the tree itself and
-  replies ``{"ok": true}``; it never reveals the tree's error.
-* ``{"op": "done"}`` ends the run (also the effect of closing stdout).
+  a path, and every leaf's class counts must follow from answered itemset
+  queries (inclusion-exclusion). The harness scores the tree itself and replies
+  ``{"ok": true}``; it never reveals the tree's error.
+* ``{"op": "done"}`` ends the run (closing stdout has the same effect).
 
-Any malformed message, invalid itemset or tree, unknown-leaf tree, crash
-(non-zero exit) or wall-clock timeout fails the run.
+Any malformed message, invalid itemset or tree, crash (non-zero exit) or
+wall-clock timeout fails the run.
 
-What the harness records (never trusting solver-reported numbers):
-incumbent errors recomputed from the data, the effort (queries used) at which
-each incumbent was submitted, and whether the information the solver acquired
-proves the final incumbent optimal (see ``proves_optimal``).
+What the harness records (it never trusts a solver-reported number): the
+training error of every improving incumbent, recomputed from the data, with
+the effort (queries answered so far) at which it was submitted; and whether
+the counts the solver acquired prove its final incumbent optimal
+(``proves_optimal``).
 """
 
 from __future__ import annotations
@@ -42,6 +45,7 @@ from __future__ import annotations
 import json
 import queue
 import subprocess
+import sys
 import threading
 import time
 from dataclasses import dataclass, field
@@ -62,27 +66,29 @@ def _bits(mask: int):
 @dataclass
 class Instance:
     name: str
+    experiment: str
     n_rows: int
     n_features: int
     max_depth: int
     budget: int
     columns: list[int]
     pos: int
-    optimal_error: int | None = None
+    optimal_error: int
     all_rows: int = 0
     neg: int = 0
 
     @classmethod
-    def from_json(cls, spec: dict, optimal_error: int | None) -> "Instance":
+    def from_json(cls, spec: dict, optimal_error: int) -> "Instance":
         inst = cls(
             name=spec["name"],
+            experiment=spec["experiment"],
             n_rows=int(spec["n_rows"]),
             n_features=int(spec["n_features"]),
             max_depth=int(spec["max_depth"]),
             budget=int(spec["budget"]),
             columns=[int(h, 16) for h in spec["columns"]],
             pos=int(spec["labels"], 16),
-            optimal_error=optimal_error,
+            optimal_error=int(optimal_error),
         )
         inst.all_rows = (1 << inst.n_rows) - 1
         inst.neg = inst.all_rows & ~inst.pos
@@ -106,6 +112,7 @@ class Instance:
 @dataclass
 class RunRecord:
     instance: str
+    experiment: str
     budget: int
     optimal_error: int
     failed: bool = False
@@ -115,21 +122,20 @@ class RunRecord:
     used: int = 0
     ended_by: str = ""
     proved: bool = False
-    proof_effort: int | None = None
     wall_seconds: float = 0.0
 
     def to_json(self) -> dict:
-        return self.__dict__.copy()
+        return dict(self.__dict__)
 
 
 class _Knowledge:
-    """Itemsets answered so far and what they imply."""
+    """Itemsets answered so far and the branch counts they determine."""
 
-    def __init__(self, inst: Instance):
-        self.inst = inst
+    def __init__(self) -> None:
         self.known: set[int] = set()
 
     def branch_known(self, pos_mask: int, neg_mask: int) -> bool:
+        # counts(pos, neg) = sum over S subset of neg of (-1)^|S| count(pos | S)
         sub = neg_mask
         known = self.known
         while True:
@@ -154,7 +160,7 @@ def _parse_itemset(raw, inst: Instance) -> int:
     return mask
 
 
-def _tree_error(tree, inst: Instance, knowledge: _Knowledge) -> int:
+def tree_error(tree, inst: Instance, knowledge: _Knowledge) -> int:
     """Validate a submitted tree and return its training error."""
     error = 0
     stack = [(tree, 0, 0, 0)]
@@ -181,7 +187,7 @@ def _tree_error(tree, inst: Instance, knowledge: _Knowledge) -> int:
             stack.append((node["one"], pos_mask | bit, neg_mask, depth + 1))
         else:
             label = node.get("label")
-            if label not in (0, 1) or isinstance(label, bool):
+            if isinstance(label, bool) or label not in (0, 1):
                 raise RunFailure("leaf label must be 0 or 1")
             if not knowledge.branch_known(pos_mask, neg_mask):
                 raise RunFailure("submitted tree has a leaf whose counts were never queried")
@@ -194,12 +200,12 @@ def proves_optimal(inst: Instance, knowledge: _Knowledge, target: int) -> bool:
     """True iff the acquired itemset counts prove that no depth-limited tree
     has training error below ``target``.
 
-    The lower bound is the tightest one implied by the known counts: an
-    unknown branch is only known to have error >= 0, a node's error is the
+    The bound is the tightest one implied by the known counts: a branch whose
+    counts are unknown can only be bounded by error >= 0, a node's error is the
     minimum of its leaf error and its best split, and a split's error is the
-    sum of its children's. Splits whose child would be empty violate the
-    minimum support of 1 and are skipped. This is the reasoning of a complete
-    branch-and-bound search (DL8.5), replayed on the solver's information.
+    sum of its children's. Splits with an empty child are skipped (they never
+    beat the leaf). This is the reasoning of a complete branch-and-bound search
+    (DL8.5), replayed on the solver's information.
     """
     if target <= 0:
         return True
@@ -267,30 +273,21 @@ def _reader(stream, out_q: "queue.Queue[str | None]") -> None:
         out_q.put(None)
 
 
-def run_solver(
-    command: list[str],
-    inst: Instance,
-    cwd: str | Path,
-    wall_limit: float,
-    stderr_path: Path | None = None,
-) -> RunRecord:
+def run_solver(command: list[str], inst: Instance, cwd: str | Path, wall_limit: float,
+               stderr_path: Path | None = None) -> RunRecord:
     """Run one solver on one instance and return the harness-side record."""
-    rec = RunRecord(instance=inst.name, budget=inst.budget, optimal_error=int(inst.optimal_error))
-    knowledge = _Knowledge(inst)
+    rec = RunRecord(instance=inst.name, experiment=inst.experiment, budget=inst.budget,
+                    optimal_error=inst.optimal_error)
+    knowledge = _Knowledge()
     count_cache: dict[int, tuple[int, int]] = {}
     best_error: int | None = None
     start = time.monotonic()
+    if command and command[0] in ("python", "python3"):
+        command = [sys.executable] + list(command[1:])  # same interpreter as the evaluator
     err_handle = open(stderr_path, "w") if stderr_path else subprocess.DEVNULL
     try:
-        proc = subprocess.Popen(
-            command,
-            cwd=str(cwd),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=err_handle,
-            text=True,
-            bufsize=1,
-        )
+        proc = subprocess.Popen(command, cwd=str(cwd), stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE, stderr=err_handle, text=True, bufsize=1)
     except OSError as exc:
         rec.failed, rec.failure = True, f"could not start solver: {exc}"
         if stderr_path:
@@ -306,14 +303,8 @@ def run_solver(
         proc.stdin.flush()
 
     try:
-        send({
-            "type": "instance",
-            "protocol": 1,
-            "n_features": inst.n_features,
-            "max_depth": inst.max_depth,
-            "min_support": 1,
-            "budget": inst.budget,
-        })
+        send({"type": "instance", "protocol": 1, "n_features": inst.n_features,
+              "max_depth": inst.max_depth, "min_support": 1, "budget": inst.budget})
         while True:
             remaining = wall_limit - (time.monotonic() - start)
             if remaining <= 0:
@@ -354,9 +345,10 @@ def run_solver(
                 rec.used += len(masks)
                 send({"ok": True, "counts": out, "used": rec.used})
             elif op == "incumbent":
-                err = _tree_error(msg.get("tree"), inst, knowledge)
+                err = tree_error(msg.get("tree"), inst, knowledge)
                 if err < inst.optimal_error:
-                    raise RunFailure("internal: tree error below the stored optimum")
+                    raise RuntimeError(f"{inst.name}: tree error {err} below the stored optimum "
+                                       f"{inst.optimal_error}; the answer file is wrong")
                 if best_error is None or err < best_error:
                     best_error = err
                     rec.events.append([rec.used, err])
@@ -378,7 +370,7 @@ def run_solver(
             raise RunFailure(f"solver exited with status {code}")
     except RunFailure as exc:
         rec.failed, rec.failure = True, str(exc)
-    except (BrokenPipeError, OSError) as exc:
+    except (BrokenPipeError, OSError, ValueError) as exc:
         rec.failed, rec.failure = True, f"pipe error: {exc}"
     finally:
         if proc.poll() is None:
@@ -391,18 +383,15 @@ def run_solver(
             err_handle.close()
     rec.wall_seconds = round(time.monotonic() - start, 3)
     rec.final_error = best_error
-    if not rec.failed and best_error is not None:
-        if proves_optimal(inst, knowledge, best_error):
-            if best_error != inst.optimal_error:
-                rec.failed, rec.failure = True, "internal: proof verified for a non-optimal tree"
-            else:
-                rec.proved = True
-                rec.proof_effort = rec.used
+    if not rec.failed and best_error is not None and best_error == inst.optimal_error:
+        # A valid proof of a non-optimal value is impossible, so only the
+        # optimal incumbent needs checking.
+        rec.proved = proves_optimal(inst, knowledge, best_error)
     return rec
 
 
 def gap(error: int | None, optimal: int) -> float:
-    """Primal gap of the paper (Berthold 2013): |x - x*| / |x|, 1 with no solution."""
+    """Primal gap of the paper (Berthold 2013): |x - x*| / |x|; 1 with no solution."""
     if error is None:
         return 1.0
     if error <= 0:
@@ -411,7 +400,7 @@ def gap(error: int | None, optimal: int) -> float:
 
 
 def primal_integral(rec: RunRecord) -> float:
-    """Normalised primal integral over the effort horizon [0, budget]."""
+    """Primal integral over the effort horizon [0, budget], divided by the budget."""
     budget = rec.budget
     total = 0.0
     t_prev, g_prev = 0, 1.0
@@ -419,8 +408,6 @@ def primal_integral(rec: RunRecord) -> float:
         t = min(effort, budget)
         total += g_prev * (t - t_prev)
         t_prev, g_prev = t, gap(error, rec.optimal_error)
-    if rec.proved:
-        g_prev = 0.0
     total += g_prev * (budget - t_prev)
     return total / budget
 

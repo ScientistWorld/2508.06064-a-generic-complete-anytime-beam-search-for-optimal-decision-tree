@@ -1,22 +1,18 @@
 #!/bin/bash
-# Reproduce the paper's results end-to-end.
-#
-# This script runs inside the compute container and should call
-# scripts/baseline.sh and scripts/method.sh to run baselines and
-# the paper's method, each of which calls scripts/evaluate.sh.
-#
-# Assumes:
-#   - Container is built (environment/container.sif)
-#   - Data and models are downloaded (via scripts/download.sh)
-#   - Working directory is /home/user
-#
-# This is the "gold standard" reproduction — 
-# You do not need to run this, but keep this in good shape
-# so other agents can easily run a full loop of reproduction and get the paper's numbers.
-
+# Reproduce the gym's reference results end to end (CPU only).
+#   1. build the instances if they are missing (exact optima, ~30 min);
+#   2. run the baselines and every CA-DL8.5 instantiation on the train slice
+#      (scoring/scores_train.json and scoring/scores.json);
+#   3. run them on the held-out test slice when it is present
+#      (scoring/scores_test.json).
 set -euo pipefail
-
 cd /home/user
-
-bash scripts/baseline.sh
-bash scripts/method.sh
+[ -s eval/train/instances.json ] || python -m eval.train.build_instances
+if [ -f eval/test/build_instances.py ]; then
+  [ -s eval/test/instances.json ] || python -m eval.test.build_instances
+fi
+bash scripts/evaluate_train.sh
+cp scoring/scores_train.json scoring/scores.json
+if [ -f eval/test/evaluate.py ]; then
+  bash scripts/evaluate_test.sh
+fi

@@ -1,27 +1,29 @@
 #!/bin/bash
-# Download all data and models needed for this environment.
+# Download all data needed for this environment. Idempotent: existing files
+# are skipped, missing ones are fetched.
 #
-# Run on a node with internet access BEFORE building the container
-# or submitting compute jobs.
+# The 24 CP4IM binary classification datasets used by the paper, in the dense
+# 0/1 format distributed by the DL8.5 authors' pydl8.5 repository (pinned
+# commit). The original CP4IM host (dtai-static.cs.kuleuven.be/CP4IM) no longer
+# serves the files. Only the instance builders (eval/*/build_instances.py)
+# read these files; solvers never see them.
 #
-# This script should be idempotent — safe to run multiple times.
-# It should skip files that already exist.
-#
-# Update the storage estimate below as you add downloads.
-#
-# Estimated total download size: <1 MB
-# Estimated disk usage after extraction: <1 MB
-#
-# This script writes only to workspace-local paths so a fresh clone can
-# reconstruct the required inputs without relying on machine-specific caches.
+# Estimated total download size: ~20 MB
+# Estimated disk usage after extraction: ~20 MB
 
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-mkdir -p data/downloads
-base="https://dtai-static.cs.kuleuven.be/CP4IM/datasets/data"
-for dataset in zoo-1 vote tic-tac-toe; do
-  target="data/downloads/${dataset}.txt"
-  [ -e "$target" ] || curl -fL "$base/${dataset}.txt" -o "$target"
+SHA=a7f0fee72b4c17bbcb727050ba102db7dda10119
+base="https://raw.githubusercontent.com/aia-uclouvain/pydl8.5/${SHA}/datasets"
+mkdir -p data/downloads/cp4im
+for d in anneal audiology australian-credit breast-wisconsin diabetes german-credit \
+         heart-cleveland hepatitis hypothyroid ionosphere kr-vs-kp letter lymph mushroom \
+         pendigits primary-tumor segment soybean splice-1 tic-tac-toe vehicle vote yeast zoo-1; do
+  target="data/downloads/cp4im/${d}.txt"
+  if [ ! -s "$target" ]; then
+    curl -fsSL --retry 3 "${base}/${d}.txt" -o "${target}.part"
+    mv "${target}.part" "$target"
+  fi
 done

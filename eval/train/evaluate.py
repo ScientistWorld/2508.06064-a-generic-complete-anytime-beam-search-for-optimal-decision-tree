@@ -1,213 +1,210 @@
+"""Score every registered solver on the TRAIN slice of the anytime optimal-tree benchmark.
+
+Solvers are discovered from the registries (default: ``method/solvers.json``
+and ``baseline/solvers.json``; see briefing/evaluation.md for the format).
+Each solver runs once per instance as a subprocess speaking the oracle
+protocol of ``harness.py``; nothing the solver writes is trusted except the
+trees, which the harness validates and scores against the data itself.
+
+Scored per experiment: the average primal gap integral over the effort budget
+and the average primal gap of the final incumbent (both lower is better).
+
+A solver's run is failed -- worst value in every metric of every experiment --
+if it fails on any instance (protocol violation, invalid tree, crash, timeout)
+or if it does not prove optimality on every completeness-check instance, whose
+budgets far exceed the size of their whole search space (the completeness
+constraint: a complete method must be able to certify the optimum).
+
+Usage: python -m eval.train.evaluate        (no arguments needed)
+"""
+
 from __future__ import annotations
 
 import argparse
 import json
+import os
+import sys
+import traceback
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
+from eval.train.harness import Instance, RunRecord, final_gap, primal_integral, run_solver
 
-EXPERIMENT = "depth4_cp4im_anytime"
 SLICE = "train"
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent
+DEFAULT_REGISTRIES = ["method/solvers.json", "baseline/solvers.json"]
+EXPERIMENTS = ["anytime_depth4", "anytime_depth5"]
+METRICS = ["avg_primal_gap_integral", "avg_final_primal_gap"]
+WORST = {"avg_primal_gap_integral": 1.0, "avg_final_primal_gap": 1.0}
+GATE = "completeness"
 
 
-def gap(error: int, optimal_error: int) -> float:
-    if error <= 0:
-        return 0.0
-    return abs(error - optimal_error) / abs(error)
-
-
-def instance_key(record: dict) -> tuple:
-    return (
-        record["dataset"],
-        record.get("depth"),
-        record.get("minsup"),
-        record.get("n_rows"),
-        record.get("n_features"),
-    )
-
-
-def read_records(paths: list[str]) -> list[dict]:
-    records: list[dict] = []
-    for path in paths:
-        p = Path(path)
-        if not p.exists():
+def load_registries(paths: list[str]) -> tuple[dict[str, list[str]], dict[str, str]]:
+    """Return (solvers, problems); a malformed entry is kept as a failed solver."""
+    solvers: dict[str, list[str]] = {}
+    problems: dict[str, str] = {}
+    for rel in paths:
+        path = Path(rel) if os.path.isabs(rel) else ROOT / rel
+        if not path.exists():
             continue
-        with p.open("r", encoding="utf-8") as handle:
-            for line in handle:
-                if line.strip():
-                    records.append(json.loads(line))
-    if not records:
-        raise SystemExit("no result records found")
-    return records
-
-
-def result_inputs(result_roots: list[str], explicit_inputs: list[str] | None) -> list[str]:
-    if explicit_inputs:
-        return explicit_inputs
-
-    root_candidates: list[Path] = []
-    for root in result_roots:
-        base = Path(root)
-        if base.is_file():
-            root_candidates.append(base)
+        try:
+            data = json.loads(path.read_text())
+            entries = data.get("solvers", data)
+            items = list(entries.items())
+        except Exception as exc:
+            print(f"[{SLICE}] unreadable registry {path}: {exc!r}", file=sys.stderr)
             continue
-        root_candidates.extend(
-            [
-                base / "baseline_results.jsonl",
-                base / "method_results.jsonl",
-                base / "outputs" / "baseline_results.jsonl",
-                base / "outputs" / "method_results.jsonl",
-            ]
-        )
-
-    candidates = [candidate for candidate in root_candidates if candidate.exists()]
-    if not candidates:
-        candidates = [
-            Path("outputs/baseline_results.jsonl"),
-            Path("outputs/method_results.jsonl"),
-        ]
-
-    seen: set[Path] = set()
-    inputs: list[str] = []
-    for candidate in candidates:
-        normalized = candidate.resolve() if candidate.exists() else candidate
-        if normalized not in seen:
-            seen.add(normalized)
-            inputs.append(str(candidate))
-    return inputs
+        for name, entry in items:
+            if not isinstance(name, str) or name.startswith("_"):
+                continue
+            command = entry.get("command") if isinstance(entry, dict) else entry
+            if name in solvers or name in problems:
+                problems[name] = "registered more than once"
+                solvers.pop(name, None)
+            elif not (isinstance(command, list) and command and all(isinstance(a, str) for a in command)):
+                problems[name] = "registry entry needs a non-empty command list"
+            else:
+                solvers[name] = command
+    return solvers, problems
 
 
-def exact_optima(records: list[dict]) -> dict[tuple, int]:
-    optima: dict[tuple, int] = {}
-    for record in records:
-        if record.get("method") == "dl85_exact" and record.get("proved_optimal"):
-            optima[instance_key(record)] = int(record["incumbent_error"])
-    return optima
+def load_instances() -> list[tuple[dict, int]]:
+    specs = json.loads((HERE / "instances.json").read_text())["instances"]
+    answers = json.loads((HERE / "answers.json").read_text())
+    return [(spec, int(answers[spec["name"]]["optimal_error"])) for spec in specs]
 
 
-def sorted_events(record: dict) -> list[dict]:
-    events = sorted(
-        record.get("events", []),
-        key=lambda event: float(event.get("iteration", 0.0)),
-    )
-    if not events:
-        raise ValueError(f"missing anytime events for {record.get('method')} on {record.get('dataset')}")
-    return events
+def _task(args):
+    name, command, spec, optimal, wall, stderr_path = args
+    try:
+        inst = Instance.from_json(spec, optimal)
+        rec = run_solver(command, inst, ROOT, wall, Path(stderr_path) if stderr_path else None).to_json()
+    except Exception as exc:  # an evaluator-side error fails the run, never scores it
+        rec = {"instance": spec["name"], "experiment": spec["experiment"], "budget": spec["budget"],
+               "optimal_error": optimal, "failed": True, "events": [], "final_error": None,
+               "used": 0, "proved": False,
+               "failure": f"evaluator error: {exc!r}: {traceback.format_exc(limit=3)}"}
+    return name, rec
 
 
-def event_effort(event: dict, fallback: int) -> float:
-    return float(event.get("iteration", fallback))
+def write_scores(path: Path, results: dict, extra: dict) -> None:
+    payload = {"experiments": {}}
+    for exp in EXPERIMENTS:
+        payload["experiments"][exp] = {"slice": SLICE, **extra.get(exp, {}), "results": results.get(exp, {})}
+    for key, value in extra.items():
+        if key not in EXPERIMENTS:
+            payload[key] = value
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2) + "\n")
+    os.replace(tmp, path)
 
 
-def incumbent_error_at(record: dict, when: float) -> int:
-    events = sorted_events(record)
-    current_error = int(events[0]["error"])
-    for i, event in enumerate(events):
-        if event_effort(event, i) > when:
-            break
-        current_error = min(current_error, int(event["error"]))
-    return current_error
-
-
-def proof_effort(record: dict, optimal_error: int, horizon: float) -> float | None:
-    events = sorted_events(record)
-    for i, event in enumerate(events):
-        if event.get("optimal") and int(event["error"]) == optimal_error:
-            return event_effort(event, i)
-    if record.get("proved_optimal") and int(record.get("incumbent_error", -1)) == optimal_error:
-        # The proof-rate constraint must be backed by the anytime trace. Some
-        # legacy records only have a terminal proved_optimal flag; count those
-        # as certified at the horizon, not as an immediate proof.
-        return horizon
-    return None
-
-
-def window_primal_integral(record: dict, optimal_error: int, start: float, end: float) -> float:
-    if end <= start:
-        raise ValueError(f"invalid scoring window: start={start}, end={end}")
-
-    events = sorted_events(record)
-    current_error = incumbent_error_at(record, start)
-    current_effort = start
-    total = 0.0
-
-    for i, event in enumerate(events):
-        bounded_effort = min(event_effort(event, i), end)
-        if bounded_effort <= start:
-            continue
-        if bounded_effort > current_effort:
-            total += gap(current_error, optimal_error) * (bounded_effort - current_effort)
-        current_error = min(current_error, int(event["error"]))
-        current_effort = bounded_effort
-        if current_effort >= end:
-            break
-
-    if current_effort < end:
-        total += gap(current_error, optimal_error) * (end - current_effort)
-    return total / (end - start)
-
-
-def summarize(records: list[dict], horizon: float, start: float, end: float) -> dict[str, dict[str, float]]:
-    optima = exact_optima(records)
-    grouped: dict[str, list[dict]] = {}
-
-    for record in records:
-        key = instance_key(record)
-        if key not in optima:
-            raise ValueError(
-                "missing dl85_exact proved optimum for "
-                f"dataset={key[0]!r}, depth={key[1]}, minsup={key[2]}, "
-                f"n_rows={key[3]}, n_features={key[4]}"
-            )
-        grouped.setdefault(record["method"], []).append(record)
-
-    results: dict[str, dict[str, float]] = {}
-    for method, rows in sorted(grouped.items()):
-        integrals = []
-        excess_error_rates = []
-        proof_states = []
-        for row in rows:
-            optimal_error = optima[instance_key(row)]
-            terminal_error = incumbent_error_at(row, end)
-            if terminal_error < optimal_error:
-                raise ValueError(
-                    f"{method} on {row['dataset']} has incumbent error {terminal_error} "
-                    f"below proved optimum {optimal_error}"
-                )
-            integrals.append(window_primal_integral(row, optimal_error, start, end))
-            excess_error_rates.append((terminal_error - optimal_error) / max(1, int(row["n_rows"])))
-            reached_proof = proof_effort(row, optimal_error, horizon)
-            proof_states.append(1.0 if reached_proof is not None and reached_proof <= end else 0.0)
-
-        results[method] = {
-            "avg_primal_gap_integral": sum(integrals) / len(integrals),
-            "avg_excess_error_rate": sum(excess_error_rates) / len(excess_error_rates),
-            "optimality_proved_rate": sum(proof_states) / len(proof_states),
-        }
-    return results
+def worst(names) -> dict:
+    return {exp: {name: dict(WORST) for name in names} for exp in EXPERIMENTS}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("result_roots", nargs="*", help="optional result directories or JSONL files to score")
-    parser.add_argument("--inputs", nargs="+", default=None)
-    parser.add_argument("--horizon", type=float, default=16.0, help="deterministic restart/iteration effort horizon")
-    parser.add_argument("--out", default="scoring/scores_train.json")
+    parser.add_argument("--out", default=str(ROOT / "scoring" / "scores_train.json"))
+    parser.add_argument("--registry", action="append", default=None,
+                        help="solver registry JSON (repeatable); default: method/ and baseline/ registries")
+    parser.add_argument("--solvers", nargs="*", default=None, help="restrict to these registered names")
+    parser.add_argument("--jobs", type=int, default=0, help="parallel runs (default: available CPUs)")
+    parser.add_argument("--wall-limit", type=float, default=1200.0, help="seconds per run (safety cap)")
+    parser.add_argument("--runs-dir", default=None, help="optional directory for per-run records and logs")
+    parser.add_argument("--verbose", action="store_true", help="print one line per run to stdout")
     args = parser.parse_args()
+    log = sys.stdout if args.verbose else open(os.devnull, "w")
 
-    start = 0.0
-    end = args.horizon / 2.0
-    inputs = result_inputs(args.result_roots, args.inputs)
-    scores = {
-        "experiments": {
-            EXPERIMENT: {
-                "slice": SLICE,
-                "window": {"start": start, "end": end, "horizon": args.horizon},
-                "results": summarize(read_records(inputs), args.horizon, start, end),
-            }
-        }
-    }
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(scores, indent=2) + "\n", encoding="utf-8")
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    # Never leave an older score file behind: start from an empty one.
+    write_scores(out, {}, {"status": "evaluation started"})
+
+    solvers, problems = load_registries(args.registry or DEFAULT_REGISTRIES)
+    if args.solvers is not None:
+        keep = set(args.solvers)
+        solvers = {n: c for n, c in solvers.items() if n in keep}
+        problems = {n: p for n, p in problems.items() if n in keep}
+    names = sorted(set(solvers) | set(problems))
+    # Until every run has finished, every solver holds worst values only.
+    write_scores(out, worst(names), {"status": "incomplete evaluation"})
+    instances = load_instances()
+
+    runs_dir = Path(args.runs_dir) if args.runs_dir else None
+    tasks = []
+    for name, command in solvers.items():
+        for spec, optimal in instances:
+            stderr_path = None
+            if runs_dir:
+                d = runs_dir / name
+                d.mkdir(parents=True, exist_ok=True)
+                stderr_path = str(d / (spec["name"].replace("/", "__") + ".stderr"))
+            tasks.append((name, command, spec, optimal, args.wall_limit, stderr_path))
+    jobs = args.jobs or max(1, len(os.sched_getaffinity(0)))
+    records: dict[str, list[dict]] = {name: [] for name in solvers}
+    with ProcessPoolExecutor(max_workers=jobs) as pool:
+        for name, rec in pool.map(_task, tasks):
+            records[name].append(rec)
+            tag = "FAILED " + rec.get("failure", "") if rec["failed"] else (
+                f"final={rec['final_error']} opt={rec['optimal_error']} used={rec['used']} proved={rec['proved']}")
+            print(f"[{SLICE}] {name} {rec['instance']}: {tag}", flush=True, file=log)
+
+    results = {exp: {} for exp in EXPERIMENTS}
+    status, gate_info, proved_info = {}, {}, {exp: {} for exp in EXPERIMENTS}
+    ungated = {exp: {} for exp in EXPERIMENTS}  # unranked: metrics of solvers failing only the gate
+    for name in names:
+        if name in problems:
+            status[name] = "failed: " + problems[name]
+            for exp in EXPERIMENTS:
+                results[exp][name] = dict(WORST)
+            continue
+        recs = records[name]
+        # (status messages never name instances: the instance list stays private)
+        failures = sorted({r.get("failure", "").split(":")[0][:200] for r in recs if r["failed"]})
+        n_failed = sum(1 for r in recs if r["failed"])
+        gate = [r for r in recs if r["experiment"] == GATE]
+        unproved = [r for r in gate if not r["proved"]]
+        gate_info[name] = {"instances": len(gate), "proved": len(gate) - len(unproved)}
+        if failures:
+            status[name] = f"failed: {n_failed} of {len(recs)} runs failed ({'; '.join(failures)})"
+        elif not gate or unproved:
+            status[name] = (f"failed: optimality not proved on {len(unproved)} of {len(gate)} "
+                            "completeness-check instances")
+        else:
+            status[name] = "ok"
+        for exp in EXPERIMENTS:
+            rows = [RunRecord(**{k: r[k] for k in RunRecord.__dataclass_fields__ if k in r})
+                    for r in recs if r["experiment"] == exp]
+            proved_info[exp][name] = sum(1 for r in rows if r.proved)
+            values = {
+                "avg_primal_gap_integral": sum(primal_integral(r) for r in rows) / len(rows),
+                "avg_final_primal_gap": sum(final_gap(r) for r in rows) / len(rows),
+            } if rows else dict(WORST)
+            if status[name] == "ok" and rows:
+                results[exp][name] = values
+            else:
+                results[exp][name] = dict(WORST)
+                if not failures and rows:
+                    ungated[exp][name] = values
+        if runs_dir:
+            (runs_dir / name / "records.json").write_text(json.dumps(recs, indent=1) + "\n")
+    extra = {}
+    for exp in EXPERIMENTS:
+        rows = [spec for spec, _ in instances if spec["experiment"] == exp]
+        extra[exp] = {"instances": len(rows),
+                      "budgets": sorted({spec["budget"] for spec in rows}),
+                      "max_depth": sorted({spec["max_depth"] for spec in rows}),
+                      "n_features": sorted({spec["n_features"] for spec in rows}),
+                      "proved_instances": proved_info[exp],
+                      "unranked_metrics_of_solvers_failing_only_completeness": ungated[exp]}
+    extra["status"] = status
+    extra["completeness_check"] = gate_info
+    write_scores(out, results, extra)
+    bad = [n for n, s in status.items() if s != "ok"]
+    if bad:
+        print(f"[{SLICE}] solvers scored as failed: {bad}", file=sys.stderr)
 
 
 if __name__ == "__main__":

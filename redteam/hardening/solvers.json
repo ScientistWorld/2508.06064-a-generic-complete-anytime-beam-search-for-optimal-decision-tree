@@ -1,0 +1,18 @@
+{
+  "solvers": {
+    "ca_discrepancy_kdp": {"command": ["python", "-m", "redteam.hardening.variants", "--variant", "kdp"],
+                           "description": "genuinely better variant: reference + exact DP over already-queried counts"},
+    "ca_discrepancy_nocache": {"command": ["python", "-m", "redteam.hardening.variants", "--variant", "nocache"],
+                               "description": "weaker ablation: reference without the count cache across restarts"},
+    "shortcut_bruteforce_lattice": {"command": ["python", "-m", "redteam.hardening.bruteforce"],
+                                    "description": "level-wise exhaustive itemset-lattice enumeration"},
+    "shortcut_unqueried_tree": {"command": ["python", "-m", "redteam.hardening.shortcuts", "--mode", "unqueried_tree"],
+                                "description": "claims a deep tree whose leaf counts were never fetched"},
+    "shortcut_crash": {"command": ["python", "-m", "redteam.hardening.shortcuts", "--mode", "crash"],
+                       "description": "reference search, then exits non-zero"},
+    "shortcut_noproof": {"command": ["python", "-m", "redteam.hardening.shortcuts", "--mode", "noproof"],
+                         "description": "reference search stopped after 3 restarts: incomplete heuristic"},
+    "shortcut_duplicate": {"command": ["python", "-m", "method.run_solver", "--rule", "discrepancy"],
+                           "description": "registered twice (see second registry) to check duplicate handling"}
+  }
+}

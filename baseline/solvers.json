@@ -1,0 +1,12 @@
+{
+  "solvers": {
+    "c45_greedy": {"command": ["python", "-m", "baseline.solvers", "--kind", "greedy"],
+                   "description": "C4.5-style information-gain greedy tree (static)"},
+    "top3": {"command": ["python", "-m", "baseline.solvers", "--kind", "topk", "--k", "3"],
+             "description": "Top-3 DL8.5 (incomplete)"},
+    "top5": {"command": ["python", "-m", "baseline.solvers", "--kind", "topk", "--k", "5"],
+             "description": "Top-5 DL8.5 (incomplete)"},
+    "dl85": {"command": ["python", "-m", "baseline.solvers", "--kind", "dl85"],
+             "description": "DL8.5 exact depth-first branch-and-bound"}
+  }
+}

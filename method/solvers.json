@@ -1,0 +1,14 @@
+{
+  "solvers": {
+    "ca_discrepancy_monotonic": {"command": ["python", "-m", "method.run_solver", "--rule", "discrepancy", "--relax", "monotonic"],
+                                 "description": "CA-DL8.5, Discrepancy rule (LDS-DL8.5), monotonic relaxation; the reference instantiation"},
+    "ca_topk_star_monotonic": {"command": ["python", "-m", "method.run_solver", "--rule", "topk_star", "--relax", "monotonic"],
+                               "description": "CA-DL8.5, Top-k* rule (width halved per level), monotonic relaxation"},
+    "ca_topk_monotonic": {"command": ["python", "-m", "method.run_solver", "--rule", "topk", "--relax", "monotonic"],
+                          "description": "CA-DL8.5, Top-k rule, monotonic relaxation"},
+    "ca_gain_monotonic": {"command": ["python", "-m", "method.run_solver", "--rule", "gain", "--relax", "monotonic"],
+                          "description": "CA-DL8.5, Gain rule, monotonic relaxation"},
+    "ca_purity": {"command": ["python", "-m", "method.run_solver", "--rule", "purity", "--relax", "monotonic"],
+                  "description": "CA-DL8.5, Purity rule"}
+  }
+}
