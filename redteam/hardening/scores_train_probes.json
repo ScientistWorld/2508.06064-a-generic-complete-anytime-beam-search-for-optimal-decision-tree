@@ -36,7 +36,7 @@
     },
     "anytime_depth5": {
       "slice": "train",
-      "instances": 11,
+      "instances": 16,
       "budgets": [
         60000
       ],
@@ -45,6 +45,7 @@
       ],
       "n_features": [
         37,
+        38,
         40
       ],
       "proved_instances": {
@@ -55,16 +56,16 @@
       "unranked_metrics_of_solvers_failing_only_completeness": {},
       "results": {
         "ca_discrepancy_kdp": {
-          "avg_primal_gap_integral": 0.18260615889558848,
-          "avg_final_primal_gap": 0.09906466727494015
+          "avg_primal_gap_integral": 0.17972423718887479,
+          "avg_final_primal_gap": 0.09377707025939883
         },
         "ca_discrepancy_nocache": {
-          "avg_primal_gap_integral": 0.2918571195105959,
-          "avg_final_primal_gap": 0.2589662156146923
+          "avg_primal_gap_integral": 0.29352543143226373,
+          "avg_final_primal_gap": 0.2613403524030437
         },
         "shortcut_bruteforce_lattice": {
-          "avg_primal_gap_integral": 0.4863817153122721,
-          "avg_final_primal_gap": 0.46815900971348595
+          "avg_primal_gap_integral": 0.4826348200766203,
+          "avg_final_primal_gap": 0.4643126127022054
         }
       }
     }

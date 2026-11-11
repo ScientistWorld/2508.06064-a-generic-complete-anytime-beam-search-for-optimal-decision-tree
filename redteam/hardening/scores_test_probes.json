@@ -2,7 +2,7 @@
   "experiments": {
     "anytime_depth4": {
       "slice": "test",
-      "instances": 20,
+      "instances": 24,
       "budgets": [
         20000
       ],
@@ -10,36 +10,34 @@
         4
       ],
       "n_features": [
-        17,
-        27,
         40
       ],
       "proved_instances": {
-        "ca_discrepancy_kdp": 2,
+        "ca_discrepancy_kdp": 0,
         "ca_discrepancy_nocache": 0,
-        "shortcut_bruteforce_lattice": 2,
+        "shortcut_bruteforce_lattice": 0,
         "shortcut_crash": 0,
         "shortcut_noproof": 0,
         "shortcut_unqueried_tree": 0
       },
       "unranked_metrics_of_solvers_failing_only_completeness": {
         "shortcut_noproof": {
-          "avg_primal_gap_integral": 0.21278908738013746,
-          "avg_final_primal_gap": 0.204093837132893
+          "avg_primal_gap_integral": 0.21500555069606556,
+          "avg_final_primal_gap": 0.204793642088322
         }
       },
       "results": {
         "ca_discrepancy_kdp": {
-          "avg_primal_gap_integral": 0.07736550390115313,
-          "avg_final_primal_gap": 0.022037317697328983
+          "avg_primal_gap_integral": 0.08982469816181633,
+          "avg_final_primal_gap": 0.03353699432407269
         },
         "ca_discrepancy_nocache": {
-          "avg_primal_gap_integral": 0.16803221736539437,
-          "avg_final_primal_gap": 0.12561317035028113
+          "avg_primal_gap_integral": 0.18282460055361607,
+          "avg_final_primal_gap": 0.14270184986853557
         },
         "shortcut_bruteforce_lattice": {
-          "avg_primal_gap_integral": 0.33688392883918555,
-          "avg_final_primal_gap": 0.2552046427941376
+          "avg_primal_gap_integral": 0.3833513319021862,
+          "avg_final_primal_gap": 0.29655342399739504
         },
         "shortcut_crash": {
           "avg_primal_gap_integral": 1.0,
@@ -65,7 +63,7 @@
     },
     "anytime_depth5": {
       "slice": "test",
-      "instances": 12,
+      "instances": 18,
       "budgets": [
         60000
       ],
@@ -73,36 +71,34 @@
         5
       ],
       "n_features": [
-        17,
-        27,
         40
       ],
       "proved_instances": {
-        "ca_discrepancy_kdp": 2,
+        "ca_discrepancy_kdp": 0,
         "ca_discrepancy_nocache": 0,
-        "shortcut_bruteforce_lattice": 2,
+        "shortcut_bruteforce_lattice": 0,
         "shortcut_crash": 0,
         "shortcut_noproof": 0,
         "shortcut_unqueried_tree": 0
       },
       "unranked_metrics_of_solvers_failing_only_completeness": {
         "shortcut_noproof": {
-          "avg_primal_gap_integral": 0.3148277794224062,
-          "avg_final_primal_gap": 0.3064454898854294
+          "avg_primal_gap_integral": 0.3165558655653663,
+          "avg_final_primal_gap": 0.3080951098661018
         }
       },
       "results": {
         "ca_discrepancy_kdp": {
-          "avg_primal_gap_integral": 0.136994283867389,
-          "avg_final_primal_gap": 0.07708509272012044
+          "avg_primal_gap_integral": 0.17581977386218736,
+          "avg_final_primal_gap": 0.10186466461069436
         },
         "ca_discrepancy_nocache": {
-          "avg_primal_gap_integral": 0.27157015646453814,
-          "avg_final_primal_gap": 0.21217358412941056
+          "avg_primal_gap_integral": 0.2844988122892549,
+          "avg_final_primal_gap": 0.24408347719659376
         },
         "shortcut_bruteforce_lattice": {
-          "avg_primal_gap_integral": 0.4333663271888275,
-          "avg_final_primal_gap": 0.40103441966238323
+          "avg_primal_gap_integral": 0.47026279215524597,
+          "avg_final_primal_gap": 0.45454869917701923
         },
         "shortcut_crash": {
           "avg_primal_gap_integral": 1.0,
@@ -131,11 +127,11 @@
     "ca_discrepancy_kdp": "ok",
     "ca_discrepancy_nocache": "ok",
     "shortcut_bruteforce_lattice": "ok",
-    "shortcut_crash": "failed: 35 of 35 runs failed (solver exited with status 3)",
+    "shortcut_crash": "failed: 45 of 45 runs failed (solver exited with status 3)",
     "shortcut_duplicate": "failed: registered more than once",
     "shortcut_malformed": "failed: registry entry needs a non-empty command list",
     "shortcut_noproof": "failed: optimality not proved on 3 of 3 completeness-check instances",
-    "shortcut_unqueried_tree": "failed: 35 of 35 runs failed (submitted tree has a leaf whose counts were never queried)"
+    "shortcut_unqueried_tree": "failed: 45 of 45 runs failed (submitted tree has a leaf whose counts were never queried)"
   },
   "completeness_check": {
     "ca_discrepancy_kdp": {
