@@ -1,45 +1,209 @@
 {
   "experiments": {
-    "depth4_cp4im_anytime": {
+    "anytime_depth4": {
       "slice": "test",
-      "window": {
-        "start": 8.0,
-        "end": 16.0,
-        "horizon": 16.0
+      "instances": 20,
+      "budgets": [
+        20000
+      ],
+      "max_depth": [
+        4
+      ],
+      "n_features": [
+        17,
+        27,
+        40
+      ],
+      "proved_instances": {
+        "c45_greedy": 0,
+        "ca_discrepancy_monotonic": 2,
+        "ca_gain_monotonic": 2,
+        "ca_purity": 2,
+        "ca_topk_monotonic": 2,
+        "ca_topk_star_monotonic": 2,
+        "dl85": 2,
+        "top3": 0,
+        "top5": 0
       },
-      "methods_source": "scoring/scores_train.json",
-      "results": {
+      "unranked_metrics_of_solvers_failing_only_completeness": {
         "c45_greedy": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.006055879506315041,
-          "optimality_proved_rate": 0.0
-        },
-        "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.04428571428571429,
-          "avg_excess_error_rate": 0.0042457546452939155,
-          "optimality_proved_rate": 0.0
-        },
-        "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.03481934731934732,
-          "avg_excess_error_rate": 0.002853966197138035,
-          "optimality_proved_rate": 0.3333333333333333
-        },
-        "ca_topk_star_monotonic": {
-          "avg_primal_gap_integral": 0.051211234493797525,
-          "avg_excess_error_rate": 0.0042457546452939155,
-          "optimality_proved_rate": 0.3333333333333333
-        },
-        "dl85_exact": {
-          "avg_primal_gap_integral": 0.0,
-          "avg_excess_error_rate": 0.0,
-          "optimality_proved_rate": 1.0
+          "avg_primal_gap_integral": 0.34350372241840443,
+          "avg_final_primal_gap": 0.33113469181486027
         },
         "top3": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.006055879506315041,
-          "optimality_proved_rate": 0.0
+          "avg_primal_gap_integral": 0.1859959860766884,
+          "avg_final_primal_gap": 0.16772753844665994
+        },
+        "top5": {
+          "avg_primal_gap_integral": 0.16701101039411828,
+          "avg_final_primal_gap": 0.12654129473447098
+        }
+      },
+      "results": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "avg_primal_gap_integral": 0.12059739244459725,
+          "avg_final_primal_gap": 0.07370987150335914
+        },
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.19197530094449464,
+          "avg_final_primal_gap": 0.11379488136978395
+        },
+        "ca_purity": {
+          "avg_primal_gap_integral": 0.3374058031459197,
+          "avg_final_primal_gap": 0.29996828331448466
+        },
+        "ca_topk_monotonic": {
+          "avg_primal_gap_integral": 0.12872380386865803,
+          "avg_final_primal_gap": 0.07876704735033327
+        },
+        "ca_topk_star_monotonic": {
+          "avg_primal_gap_integral": 0.13093279236384403,
+          "avg_final_primal_gap": 0.09021934665157905
+        },
+        "dl85": {
+          "avg_primal_gap_integral": 0.24047291703599,
+          "avg_final_primal_gap": 0.11379488136978395
+        },
+        "top3": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
         }
       }
+    },
+    "anytime_depth5": {
+      "slice": "test",
+      "instances": 12,
+      "budgets": [
+        60000
+      ],
+      "max_depth": [
+        5
+      ],
+      "n_features": [
+        17,
+        27,
+        40
+      ],
+      "proved_instances": {
+        "c45_greedy": 0,
+        "ca_discrepancy_monotonic": 2,
+        "ca_gain_monotonic": 2,
+        "ca_purity": 2,
+        "ca_topk_monotonic": 2,
+        "ca_topk_star_monotonic": 2,
+        "dl85": 2,
+        "top3": 0,
+        "top5": 0
+      },
+      "unranked_metrics_of_solvers_failing_only_completeness": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 0.4270345365296673,
+          "avg_final_primal_gap": 0.4172718109025466
+        },
+        "top3": {
+          "avg_primal_gap_integral": 0.30708645241808935,
+          "avg_final_primal_gap": 0.2705957281946236
+        },
+        "top5": {
+          "avg_primal_gap_integral": 0.3049725751583133,
+          "avg_final_primal_gap": 0.1959978607601451
+        }
+      },
+      "results": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "avg_primal_gap_integral": 0.20238712154587635,
+          "avg_final_primal_gap": 0.13577001374434985
+        },
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.3039152189933238,
+          "avg_final_primal_gap": 0.24816513675051255
+        },
+        "ca_purity": {
+          "avg_primal_gap_integral": 0.44729736779702,
+          "avg_final_primal_gap": 0.4063476562217989
+        },
+        "ca_topk_monotonic": {
+          "avg_primal_gap_integral": 0.20849273616794117,
+          "avg_final_primal_gap": 0.15187967149390605
+        },
+        "ca_topk_star_monotonic": {
+          "avg_primal_gap_integral": 0.22297410650560381,
+          "avg_final_primal_gap": 0.17286616091318038
+        },
+        "dl85": {
+          "avg_primal_gap_integral": 0.4219915879719922,
+          "avg_final_primal_gap": 0.3107222794064241
+        },
+        "top3": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        }
+      }
+    }
+  },
+  "status": {
+    "c45_greedy": "failed: optimality not proved on 3 of 3 completeness-check instances",
+    "ca_discrepancy_monotonic": "ok",
+    "ca_gain_monotonic": "ok",
+    "ca_purity": "ok",
+    "ca_topk_monotonic": "ok",
+    "ca_topk_star_monotonic": "ok",
+    "dl85": "ok",
+    "top3": "failed: optimality not proved on 3 of 3 completeness-check instances",
+    "top5": "failed: optimality not proved on 3 of 3 completeness-check instances"
+  },
+  "completeness_check": {
+    "c45_greedy": {
+      "instances": 3,
+      "proved": 0
+    },
+    "ca_discrepancy_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_gain_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_purity": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_topk_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_topk_star_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "dl85": {
+      "instances": 3,
+      "proved": 3
+    },
+    "top3": {
+      "instances": 3,
+      "proved": 0
+    },
+    "top5": {
+      "instances": 3,
+      "proved": 0
     }
   }
 }

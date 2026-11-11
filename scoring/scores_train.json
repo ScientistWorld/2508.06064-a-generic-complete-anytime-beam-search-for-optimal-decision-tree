@@ -1,44 +1,207 @@
 {
   "experiments": {
-    "depth4_cp4im_anytime": {
+    "anytime_depth4": {
       "slice": "train",
-      "window": {
-        "start": 0.0,
-        "end": 8.0,
-        "horizon": 16.0
+      "instances": 14,
+      "budgets": [
+        20000
+      ],
+      "max_depth": [
+        4
+      ],
+      "n_features": [
+        37,
+        40
+      ],
+      "proved_instances": {
+        "c45_greedy": 0,
+        "ca_discrepancy_monotonic": 0,
+        "ca_gain_monotonic": 0,
+        "ca_purity": 0,
+        "ca_topk_monotonic": 0,
+        "ca_topk_star_monotonic": 0,
+        "dl85": 0,
+        "top3": 0,
+        "top5": 0
+      },
+      "unranked_metrics_of_solvers_failing_only_completeness": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 0.30833151873656206,
+          "avg_final_primal_gap": 0.29473044101026236
+        },
+        "top3": {
+          "avg_primal_gap_integral": 0.20078571954106836,
+          "avg_final_primal_gap": 0.18274221842026672
+        },
+        "top5": {
+          "avg_primal_gap_integral": 0.1683412849052856,
+          "avg_final_primal_gap": 0.12765266029476693
+        }
       },
       "results": {
         "c45_greedy": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.006055879506315041,
-          "optimality_proved_rate": 0.0
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
         },
         "ca_discrepancy_monotonic": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.005289595981410826,
-          "optimality_proved_rate": 0.0
+          "avg_primal_gap_integral": 0.13740747021094782,
+          "avg_final_primal_gap": 0.10115784040525021
         },
         "ca_gain_monotonic": {
-          "avg_primal_gap_integral": 0.04314065428036016,
-          "avg_excess_error_rate": 0.002853966197138035,
-          "optimality_proved_rate": 0.3333333333333333
+          "avg_primal_gap_integral": 0.21052892139400395,
+          "avg_final_primal_gap": 0.09949569202380504
+        },
+        "ca_purity": {
+          "avg_primal_gap_integral": 0.3940241530251699,
+          "avg_final_primal_gap": 0.3645069274984742
+        },
+        "ca_topk_monotonic": {
+          "avg_primal_gap_integral": 0.1409309779967324,
+          "avg_final_primal_gap": 0.10634470615963063
         },
         "ca_topk_star_monotonic": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.006055879506315041,
-          "optimality_proved_rate": 0.0
+          "avg_primal_gap_integral": 0.14320993784563227,
+          "avg_final_primal_gap": 0.10141238340366977
         },
-        "dl85_exact": {
-          "avg_primal_gap_integral": 0.0,
-          "avg_excess_error_rate": 0.0,
-          "optimality_proved_rate": 1.0
+        "dl85": {
+          "avg_primal_gap_integral": 0.25652623700758276,
+          "avg_final_primal_gap": 0.09949569202380504
         },
         "top3": {
-          "avg_primal_gap_integral": 0.0681045751633987,
-          "avg_excess_error_rate": 0.006055879506315041,
-          "optimality_proved_rate": 0.0
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
         }
       }
+    },
+    "anytime_depth5": {
+      "slice": "train",
+      "instances": 11,
+      "budgets": [
+        60000
+      ],
+      "max_depth": [
+        5
+      ],
+      "n_features": [
+        37,
+        40
+      ],
+      "proved_instances": {
+        "c45_greedy": 0,
+        "ca_discrepancy_monotonic": 0,
+        "ca_gain_monotonic": 0,
+        "ca_purity": 0,
+        "ca_topk_monotonic": 0,
+        "ca_topk_star_monotonic": 0,
+        "dl85": 0,
+        "top3": 0,
+        "top5": 0
+      },
+      "unranked_metrics_of_solvers_failing_only_completeness": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 0.4661311760279821,
+          "avg_final_primal_gap": 0.45967747784183643
+        },
+        "top3": {
+          "avg_primal_gap_integral": 0.302632089185577,
+          "avg_final_primal_gap": 0.281331043834885
+        },
+        "top5": {
+          "avg_primal_gap_integral": 0.29516654747315746,
+          "avg_final_primal_gap": 0.24778998503149333
+        }
+      },
+      "results": {
+        "c45_greedy": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "ca_discrepancy_monotonic": {
+          "avg_primal_gap_integral": 0.2521602934028264,
+          "avg_final_primal_gap": 0.18250494749848906
+        },
+        "ca_gain_monotonic": {
+          "avg_primal_gap_integral": 0.33133121453756786,
+          "avg_final_primal_gap": 0.25847672277989875
+        },
+        "ca_purity": {
+          "avg_primal_gap_integral": 0.537890009838062,
+          "avg_final_primal_gap": 0.5150033817513217
+        },
+        "ca_topk_monotonic": {
+          "avg_primal_gap_integral": 0.2618710003303674,
+          "avg_final_primal_gap": 0.18125116752075998
+        },
+        "ca_topk_star_monotonic": {
+          "avg_primal_gap_integral": 0.27389299980304754,
+          "avg_final_primal_gap": 0.22036509482561578
+        },
+        "dl85": {
+          "avg_primal_gap_integral": 0.3599852048464428,
+          "avg_final_primal_gap": 0.2710224182131224
+        },
+        "top3": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        },
+        "top5": {
+          "avg_primal_gap_integral": 1.0,
+          "avg_final_primal_gap": 1.0
+        }
+      }
+    }
+  },
+  "status": {
+    "c45_greedy": "failed: optimality not proved on 3 of 3 completeness-check instances",
+    "ca_discrepancy_monotonic": "ok",
+    "ca_gain_monotonic": "ok",
+    "ca_purity": "ok",
+    "ca_topk_monotonic": "ok",
+    "ca_topk_star_monotonic": "ok",
+    "dl85": "ok",
+    "top3": "failed: optimality not proved on 3 of 3 completeness-check instances",
+    "top5": "failed: optimality not proved on 3 of 3 completeness-check instances"
+  },
+  "completeness_check": {
+    "c45_greedy": {
+      "instances": 3,
+      "proved": 0
+    },
+    "ca_discrepancy_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_gain_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_purity": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_topk_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_topk_star_monotonic": {
+      "instances": 3,
+      "proved": 3
+    },
+    "dl85": {
+      "instances": 3,
+      "proved": 3
+    },
+    "top3": {
+      "instances": 3,
+      "proved": 0
+    },
+    "top5": {
+      "instances": 3,
+      "proved": 0
     }
   }
 }

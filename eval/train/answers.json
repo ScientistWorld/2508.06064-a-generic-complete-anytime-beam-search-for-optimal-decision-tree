@@ -1,0 +1,198 @@
+{
+ "anytime_depth4/anneal/0": {
+  "exact_seconds": 0.74,
+  "greedy_error": 81,
+  "lattice_size": 102091,
+  "leaf_error": 104,
+  "optimal_error": 64
+ },
+ "anytime_depth4/anneal/1": {
+  "exact_seconds": 0.7,
+  "greedy_error": 88,
+  "lattice_size": 102091,
+  "leaf_error": 119,
+  "optimal_error": 54
+ },
+ "anytime_depth4/australian-credit/0": {
+  "exact_seconds": 1.18,
+  "greedy_error": 60,
+  "lattice_size": 102091,
+  "leaf_error": 178,
+  "optimal_error": 54
+ },
+ "anytime_depth4/australian-credit/1": {
+  "exact_seconds": 1.2,
+  "greedy_error": 74,
+  "lattice_size": 102091,
+  "leaf_error": 174,
+  "optimal_error": 56
+ },
+ "anytime_depth4/heart-cleveland/0": {
+  "exact_seconds": 1.18,
+  "greedy_error": 19,
+  "lattice_size": 102091,
+  "leaf_error": 85,
+  "optimal_error": 11
+ },
+ "anytime_depth4/heart-cleveland/1": {
+  "exact_seconds": 1.2,
+  "greedy_error": 21,
+  "lattice_size": 102091,
+  "leaf_error": 77,
+  "optimal_error": 11
+ },
+ "anytime_depth4/hypothyroid/0": {
+  "exact_seconds": 0.9,
+  "greedy_error": 13,
+  "lattice_size": 102091,
+  "leaf_error": 83,
+  "optimal_error": 11
+ },
+ "anytime_depth4/hypothyroid/1": {
+  "exact_seconds": 0.91,
+  "greedy_error": 13,
+  "lattice_size": 102091,
+  "leaf_error": 83,
+  "optimal_error": 12
+ },
+ "anytime_depth4/kr-vs-kp/0": {
+  "exact_seconds": 0.95,
+  "greedy_error": 55,
+  "lattice_size": 74519,
+  "leaf_error": 498,
+  "optimal_error": 44
+ },
+ "anytime_depth4/kr-vs-kp/1": {
+  "exact_seconds": 0.86,
+  "greedy_error": 83,
+  "lattice_size": 74519,
+  "leaf_error": 467,
+  "optimal_error": 42
+ },
+ "anytime_depth4/soybean/0": {
+  "exact_seconds": 0.75,
+  "greedy_error": 35,
+  "lattice_size": 102091,
+  "leaf_error": 52,
+  "optimal_error": 12
+ },
+ "anytime_depth4/soybean/1": {
+  "exact_seconds": 0.74,
+  "greedy_error": 29,
+  "lattice_size": 102091,
+  "leaf_error": 54,
+  "optimal_error": 15
+ },
+ "anytime_depth4/yeast/0": {
+  "exact_seconds": 1.59,
+  "greedy_error": 238,
+  "lattice_size": 102091,
+  "leaf_error": 271,
+  "optimal_error": 209
+ },
+ "anytime_depth4/yeast/1": {
+  "exact_seconds": 1.59,
+  "greedy_error": 233,
+  "lattice_size": 102091,
+  "leaf_error": 271,
+  "optimal_error": 209
+ },
+ "anytime_depth5/anneal/0": {
+  "exact_seconds": 5.56,
+  "greedy_error": 77,
+  "lattice_size": 760099,
+  "leaf_error": 102,
+  "optimal_error": 51
+ },
+ "anytime_depth5/anneal/1": {
+  "exact_seconds": 6.35,
+  "greedy_error": 75,
+  "lattice_size": 760099,
+  "leaf_error": 109,
+  "optimal_error": 39
+ },
+ "anytime_depth5/australian-credit/0": {
+  "exact_seconds": 13.97,
+  "greedy_error": 47,
+  "lattice_size": 760099,
+  "leaf_error": 174,
+  "optimal_error": 22
+ },
+ "anytime_depth5/australian-credit/1": {
+  "exact_seconds": 20.77,
+  "greedy_error": 44,
+  "lattice_size": 760099,
+  "leaf_error": 184,
+  "optimal_error": 22
+ },
+ "anytime_depth5/hypothyroid/0": {
+  "exact_seconds": 10.48,
+  "greedy_error": 19,
+  "lattice_size": 760099,
+  "leaf_error": 85,
+  "optimal_error": 10
+ },
+ "anytime_depth5/hypothyroid/1": {
+  "exact_seconds": 10.44,
+  "greedy_error": 21,
+  "lattice_size": 760099,
+  "leaf_error": 82,
+  "optimal_error": 13
+ },
+ "anytime_depth5/kr-vs-kp/0": {
+  "exact_seconds": 9.25,
+  "greedy_error": 54,
+  "lattice_size": 510416,
+  "leaf_error": 498,
+  "optimal_error": 19
+ },
+ "anytime_depth5/kr-vs-kp/1": {
+  "exact_seconds": 10.23,
+  "greedy_error": 51,
+  "lattice_size": 510416,
+  "leaf_error": 471,
+  "optimal_error": 24
+ },
+ "anytime_depth5/soybean/0": {
+  "exact_seconds": 8.43,
+  "greedy_error": 35,
+  "lattice_size": 760099,
+  "leaf_error": 56,
+  "optimal_error": 11
+ },
+ "anytime_depth5/yeast/0": {
+  "exact_seconds": 19.75,
+  "greedy_error": 223,
+  "lattice_size": 760099,
+  "leaf_error": 266,
+  "optimal_error": 164
+ },
+ "anytime_depth5/yeast/1": {
+  "exact_seconds": 22.57,
+  "greedy_error": 205,
+  "lattice_size": 760099,
+  "leaf_error": 276,
+  "optimal_error": 159
+ },
+ "completeness/anneal/0": {
+  "exact_seconds": 0.0,
+  "greedy_error": 109,
+  "lattice_size": 176,
+  "leaf_error": 116,
+  "optimal_error": 108
+ },
+ "completeness/kr-vs-kp/0": {
+  "exact_seconds": 0.0,
+  "greedy_error": 229,
+  "lattice_size": 176,
+  "leaf_error": 457,
+  "optimal_error": 190
+ },
+ "completeness/vote/0": {
+  "exact_seconds": 0.0,
+  "greedy_error": 11,
+  "lattice_size": 176,
+  "leaf_error": 93,
+  "optimal_error": 10
+ }
+}

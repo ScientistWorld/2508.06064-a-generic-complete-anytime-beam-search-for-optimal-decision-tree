@@ -1,0 +1,91 @@
+{
+  "experiments": {
+    "anytime_depth4": {
+      "slice": "train",
+      "instances": 14,
+      "budgets": [
+        20000
+      ],
+      "max_depth": [
+        4
+      ],
+      "n_features": [
+        37,
+        40
+      ],
+      "proved_instances": {
+        "ca_discrepancy_kdp": 0,
+        "ca_discrepancy_nocache": 0,
+        "shortcut_bruteforce_lattice": 0
+      },
+      "unranked_metrics_of_solvers_failing_only_completeness": {},
+      "results": {
+        "ca_discrepancy_kdp": {
+          "avg_primal_gap_integral": 0.09542267440044397,
+          "avg_final_primal_gap": 0.040621104727485445
+        },
+        "ca_discrepancy_nocache": {
+          "avg_primal_gap_integral": 0.17248492064358395,
+          "avg_final_primal_gap": 0.12670131548731842
+        },
+        "shortcut_bruteforce_lattice": {
+          "avg_primal_gap_integral": 0.37273617233877554,
+          "avg_final_primal_gap": 0.27458587141766966
+        }
+      }
+    },
+    "anytime_depth5": {
+      "slice": "train",
+      "instances": 11,
+      "budgets": [
+        60000
+      ],
+      "max_depth": [
+        5
+      ],
+      "n_features": [
+        37,
+        40
+      ],
+      "proved_instances": {
+        "ca_discrepancy_kdp": 0,
+        "ca_discrepancy_nocache": 0,
+        "shortcut_bruteforce_lattice": 0
+      },
+      "unranked_metrics_of_solvers_failing_only_completeness": {},
+      "results": {
+        "ca_discrepancy_kdp": {
+          "avg_primal_gap_integral": 0.18260615889558848,
+          "avg_final_primal_gap": 0.09906466727494015
+        },
+        "ca_discrepancy_nocache": {
+          "avg_primal_gap_integral": 0.2918571195105959,
+          "avg_final_primal_gap": 0.2589662156146923
+        },
+        "shortcut_bruteforce_lattice": {
+          "avg_primal_gap_integral": 0.4863817153122721,
+          "avg_final_primal_gap": 0.46815900971348595
+        }
+      }
+    }
+  },
+  "status": {
+    "ca_discrepancy_kdp": "ok",
+    "ca_discrepancy_nocache": "ok",
+    "shortcut_bruteforce_lattice": "ok"
+  },
+  "completeness_check": {
+    "ca_discrepancy_kdp": {
+      "instances": 3,
+      "proved": 3
+    },
+    "ca_discrepancy_nocache": {
+      "instances": 3,
+      "proved": 3
+    },
+    "shortcut_bruteforce_lattice": {
+      "instances": 3,
+      "proved": 3
+    }
+  }
+}
