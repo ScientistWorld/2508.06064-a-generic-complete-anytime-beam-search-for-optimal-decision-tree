@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Hardening check: build hidden/train CP4IM oracle instances with exact optima, score all registered solvers (train+test), run better/weaker variants and shortcut probes through the hidden test."
+notes: "Resume after worker loss: instances already built; score all registered solvers on train+test and run the better/weaker variants and shortcut probes through the hidden test."
